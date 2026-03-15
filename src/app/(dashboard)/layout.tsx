@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -18,7 +17,6 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import {
   DashboardIcon,
   ReaderIcon,
@@ -30,6 +28,10 @@ import {
   ExitIcon,
   ArchiveIcon,
 } from "@radix-ui/react-icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
 
 const menuItems = [
   { label: "Overview", href: "/dashboard", icon: DashboardIcon },
@@ -57,11 +59,12 @@ function AppSidebar() {
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
         <Link href="/dashboard" className="text-xl font-extrabold text-sidebar-foreground">
-          Feast<span className="text-blue-400">.id</span>
+          <Image src="/logo/1.jpg" alt="Logo" width={50} height={50}/>
         </Link>
-        <p className="text-xs text-sidebar-foreground/60 mt-0.5">Admin Dashboard</p>
+        <h1 className="text-bold text-sidebar-foreground/60 mt-0.5 text-lg">
+          Admin Dashboard
+        </h1>
       </SidebarHeader>
-
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
@@ -70,7 +73,7 @@ function AppSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton isActive={pathname === item.href}>
-                    <Link href={item.href}>
+                    <Link href={item.href} className="flex items-center gap-2">
                       <item.icon className="w-4 h-4" />
                       <span>{item.label}</span>
                     </Link>
@@ -97,16 +100,50 @@ function AppSidebar() {
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
+    getUser();
+  }, []);
+
+  const username =
+    user?.user_metadata?.username ||
+    user?.email?.split("@")[0] ||
+    "User";
+
+  const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${username}`;
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <span className="text-sm font-medium text-muted-foreground">Dashboard</span>
+          <span className="text-sm font-medium text-muted-foreground">
+            Dashboard
+          </span>
+          <div className="ml-auto flex items-center gap-4">
+            <span className="text-sm font-medium">
+              Welcome {username}
+            </span>
+            <Avatar>
+              <AvatarImage src={avatarUrl} />
+              <AvatarFallback>
+                {username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

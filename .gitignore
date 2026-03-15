@@ -34,7 +34,7 @@ yarn-error.log*
 .env.local
 
 # supabase
-/.supabase
+/supabase
 
 # vercel
 .vercel

@@ -7,7 +7,7 @@ import {
   HamburgerMenuIcon,
   Cross1Icon,
 } from "@radix-ui/react-icons";
-
+import Image from "next/image";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
@@ -24,11 +24,10 @@ export default function Navbar() {
       <div className=" mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-extrabold text-white tracking-tight">
-          Feast<span className="text-blue-400">.id</span>
+          <Image src="/logo/1.jpg" alt="Logo" width={40} height={40} />
         </Link>
-
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex mx-auto items-center gap-8">
           {navLinks.map((l) => (
             <Link
               key={l.href}
@@ -44,7 +43,7 @@ export default function Navbar() {
           ))}
           <Link
             href="/login"
-            className="ml-4 bg-white text-gray-900 px-5 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition-all"
+            className="bg-white text-gray-900 px-5 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition-all"
           >
             Login
           </Link>

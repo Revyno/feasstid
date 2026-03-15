@@ -3,6 +3,7 @@ import {
   InstagramLogoIcon,
   TwitterLogoIcon,
 } from "@radix-ui/react-icons";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -11,9 +12,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="md:col-span-1">
-            <h3 className="text-white text-2xl font-extrabold mb-3">
-              Feast<span className="text-blue-400">.id</span>
-            </h3>
+           <Image src="/logo/1.jpg" alt="Logo" width={40} height={40} />
             <p className="text-sm leading-relaxed">
               Expert shoe cleaning service — bringing your favorite footwear back to life since 2023.
             </p>

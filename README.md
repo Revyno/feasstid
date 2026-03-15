@@ -1,18 +1,23 @@
-# 🧹 Feast.id —  Laundry Management System
+# C:\laragon\www\feasstid\public\logo\1.jpg — Laundry Management System
 
 Sistem manajemen laundry sepatu **Feast.id** dibangun dengan **Next.js 15**, **Tailwind CSS**, **Supabase**, **shadcn/ui**, dan **Radix UI**.
 
 ---
 
+##  Design Figma
+https://www.figma.com/design/eLFm18pmlttWMYocPyoerT/Laundry-Proposal?node-id=0-1&t=goWPhQCOD6gqe0TA-1
+
 ## 📋 Fitur
 
 ### Frontend (Public)
+
 - **Home** — Hero, About, Services overview, Shoe Materials, Branch Locations, Customer Reviews, How to Order, Fresh Updates
 - **Services** — Daftar harga lengkap (Sepatu, Tas, Additional Treatment, Topi/Helm/Koper)
 - **Gallery** — Gallery foto before & after
 - **Contact** — Info kontak dan form pesan
 
 ### Dashboard Admin (`/dashboard`)
+
 - **Overview** — Statistik (Total Orders, Customers, Order Success Rate, Payment Success, dll.)
 - **Pesanan** — CRUD pesanan dengan status tracking
 - **Pelanggan** — CRUD pelanggan dengan membership level
@@ -22,10 +27,10 @@ Sistem manajemen laundry sepatu **Feast.id** dibangun dengan **Next.js 15**, **T
 - **Laporan** — Laporan periodik (pendapatan, profit, pesanan)
 - **Users** — Manajemen admin/operator
 
-
-### Dashboaed Customer 
+### Dashboaed Customer
 
 ### Auth
+
 - Login admin via Supabase Auth
 - Register customer via Supabase Auth
 
@@ -33,15 +38,15 @@ Sistem manajemen laundry sepatu **Feast.id** dibangun dengan **Next.js 15**, **T
 
 ## 🛠️ Tech Stack
 
-| Layer | Teknologi |
-|-------|-----------|
-| Framework | Next.js 15 (App Router, TypeScript) |
-| Styling | Tailwind CSS v4 |
-| UI Components | shadcn/ui |
-| Icons | Radix UI Icons |
-| Backend/Database | Supabase (PostgreSQL + Auth) |
-| Charts | Recharts |
-| Date Utils | date-fns |
+| Layer            | Teknologi                           |
+| ---------------- | ----------------------------------- |
+| Framework        | Next.js 15 (App Router, TypeScript) |
+| Styling          | Tailwind CSS v4                     |
+| UI Components    | shadcn/ui                           |
+| Icons            | Radix UI Icons                      |
+| Backend/Database | Supabase (PostgreSQL + Auth)        |
+| Charts           | Recharts                            |
+| Date Utils       | date-fns                            |
 
 ---
 
