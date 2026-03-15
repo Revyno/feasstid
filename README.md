@@ -1,4 +1,4 @@
-# C:\laragon\www\feasstid\public\logo\1.jpg — Laundry Management System
+# [C:\laragon\www\feasstid\public\logo\1.jpg](https://github.com/Revyno/feasstid/blob/09816ba5c428cc22b5a6516a6f80d4ae811544e2/public/logo/1.jpg) — Laundry Management System
 
 Sistem manajemen laundry sepatu **Feast.id** dibangun dengan **Next.js 15**, **Tailwind CSS**, **Supabase**, **shadcn/ui**, dan **Radix UI**.
 
