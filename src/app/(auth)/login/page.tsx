@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { EyeOpenIcon,EyeNoneIcon } from "@radix-ui/react-icons";
+import { EyeOpenIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+
 export default function LoginPage() {
   const router = useRouter();
+  const supabase = createClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,26 +24,52 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    // ======================
+    // CEK ADMIN LOGIN
+    // ======================
+    const { data: adminData, error: adminError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.user_metadata?.role === "customer") {
-        router.push("/customer");
-      } else {
-        router.push("/dashboard");
-      }
+    if (!adminError && adminData.user) {
+      router.push("/dashboard");
       router.refresh();
+      return;
     }
+    // ======================
+    // CEK CUSTOMER
+    // ======================
+    const { data: customer, error: customerError } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (customerError || !customer) {
+      setError("Email atau password salah");
+      setLoading(false);
+      return;
+    }
+
+    if (customer.password !== password) {
+      setError("Email atau password salah");
+      setLoading(false);
+      return;
+    }
+
+    // simpan session customer
+    document.cookie = `customer=${JSON.stringify(customer)}; path=/`;
+
+    router.push("/customer");
+    router.refresh();
   }
 
   return (
     <div className="min-h-screen bg-[#111317] flex items-center justify-center p-4">
       <div className="w-full max-w-xl bg-white text-black p-8 sm:p-12 rounded-[2.5rem] shadow-2xl relative">
+
         <div className="text-center mb-8">
           <Image
             className="mx-auto"
@@ -51,10 +79,13 @@ export default function LoginPage() {
             height={90}
             priority
           />
-          <h2 className="text-[28px] font-extrabold mt-6 text-black">Sign In</h2>
+          <h2 className="text-[28px] font-extrabold mt-6 text-black">
+            Sign In
+          </h2>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
+
           {error && (
             <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl border border-red-200 text-sm">
               {error}
@@ -62,24 +93,17 @@ export default function LoginPage() {
           )}
 
           <div>
-            <Label htmlFor="email" className="text-black font-semibold text-sm">
-              Email
-            </Label>
+            <Label>Email</Label>
             <Input
-              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Enter your email"
-              className="mt-2 text-black bg-white border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-gray-300 rounded-xl h-12 px-4 shadow-sm"
             />
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-black font-semibold text-sm">
-              Password
-            </Label>
+            <Label>Password</Label>
             <div className="relative mt-2">
               <Input
                 id="password"
@@ -87,58 +111,39 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="Enter your password"
-                className="text-black bg-white border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-gray-300 rounded-xl h-12 px-4 shadow-sm pr-12"
+                className="pr-12"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center"
                 onClick={() => {
-                  const input = document.getElementById("password") as HTMLInputElement;
-                  if (input.type === "password") {
-                    input.type = "text";
-                  } else {
-                    input.type = "password";
-                  }
+                  const input = document.getElementById(
+                    "password"
+                  ) as HTMLInputElement;
+
+                  input.type =
+                    input.type === "password" ? "text" : "password";
                 }}
               >
-                <EyeOpenIcon className="h-5 w-5" />
+                <EyeOpenIcon />
               </button>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center">
-              <input
-                id="remember_me"
-                type="checkbox"
-                className="h-4 w-4 bg-white border-gray-300 rounded text-orange-500 focus:ring-orange-500"
-              />
-              <label htmlFor="remember_me" className="ml-2 block text-sm font-medium text-black">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link href="#" className="font-semibold text-black hover:text-gray-600 underline">
-                Forgot Password?
-              </Link>
-            </div>
-          </div>
-           <p className="text-center text-sm text-gray-500">
-            Not Have Account ?{" "}
+          <p className="text-center text-sm text-gray-500">
+            Not Have Account ?
             <Link href="/register" className="text-blue-400 hover:underline">
               Register here
             </Link>
           </p>
 
-          <div className="pt-1 pb-2 flex justify-center">
+          <div className="flex justify-center">
             <Button
               type="submit"
-              className="bg-[#FF9900] hover:bg-[#FF9900]/90 text-white text-base font-semibold rounded-xl px-12 h-12 w-40 shadow-sm transition-colors"
               disabled={loading}
+              className="bg-[#FF9900] text-white w-40"
             >
-              {loading ? "..." : "Login"}
+              {loading ? "memuat..." : "Login"}
             </Button>
           </div>
         </form>

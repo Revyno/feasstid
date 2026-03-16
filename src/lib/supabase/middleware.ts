@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -16,7 +17,9 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
+
           supabaseResponse = NextResponse.next({ request });
+
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );
@@ -25,38 +28,59 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
+  // ======================
+  // ADMIN SESSION
+  // ======================
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const customer = user?.user_metadata?.role === "customer";
-  
 
-  // If no user and trying to access protected routes, redirect to login
-  if (
-    !user && 
-    (request.nextUrl.pathname.startsWith("/dashboard") ||
-     request.nextUrl.pathname.startsWith("/customer"))
-  ) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+  // ======================
+  // CUSTOMER SESSION
+  // ======================
+  const customerSession = request.cookies.get("customer");
 
-  // Role-based redirection
-  if (user) {
-    const role = user.user_metadata?.role;
-    
-    // Customers trying to access admin dashboard
-    if (role === "customer" && request.nextUrl.pathname.startsWith("/dashboard")) {
+  const pathname = request.nextUrl.pathname;
+
+  // ======================
+  // PROTECT DASHBOARD ADMIN
+  // ======================
+  if (pathname.startsWith("/dashboard")) {
+
+    // jika bukan admin
+    if (!user) {
+
+      // tapi dia customer → redirect customer
+      if (customerSession) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/customer";
+        return NextResponse.redirect(url);
+      }
+
+      // tidak login sama sekali
       const url = request.nextUrl.clone();
-      url.pathname = "/customer";
+      url.pathname = "/login";
       return NextResponse.redirect(url);
     }
-    
-    // Admins (or non-customers) trying to access customer dashboard
-    if (role !== "customer" && request.nextUrl.pathname.startsWith("/customer")) {
+  }
+
+  // ======================
+  // PROTECT DASHBOARD CUSTOMER
+  // ======================
+  if (pathname.startsWith("/customer")) {
+
+    // jika tidak ada customer session
+    if (!customerSession) {
+
+      // tapi admin login
+      if (user) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/dashboard";
+        return NextResponse.redirect(url);
+      }
+
       const url = request.nextUrl.clone();
-      url.pathname = "/dashboard";
+      url.pathname = "/login";
       return NextResponse.redirect(url);
     }
   }

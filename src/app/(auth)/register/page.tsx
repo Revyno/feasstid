@@ -6,19 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-// import Image from "next/image";
-// import Logo from "@/public/logo/1.png";
 import Image from "next/image";
+
 export default function RegisterPage() {
   const router = useRouter();
+  const supabase = createClient();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,24 +26,42 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name,email,password,phone, role: "customer" } },
-    });
+    // cek email sudah ada atau belum
+    const { data: existing } = await supabase
+      .from("customers")
+      .select("email")
+      .eq("email", email)
+      .single();
+
+    if (existing) {
+      setError("Email sudah digunakan");
+      setLoading(false);
+      return;
+    }
+
+    // insert customer
+    const { error } = await supabase.from("customers").insert([
+      {
+        name,
+        email,
+        password,
+        phone,
+      },
+    ]);
 
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
-      router.push("/login?registered=true");
+      return;
     }
+
+    router.push("/login?registered=true");
   }
 
   return (
     <div className="min-h-screen bg-[#111317] flex items-center justify-center p-4">
       <div className="w-full max-w-xl bg-white text-black p-8 sm:p-12 rounded-[2.5rem] shadow-2xl relative">
+
         <div className="text-center mb-8">
           <Image
             className="mx-auto"
@@ -58,10 +71,13 @@ export default function RegisterPage() {
             height={90}
             priority
           />
-          <h2 className="text-[28px] font-extrabold mt-6 text-black">Sign Up</h2>
+          <h2 className="text-[28px] font-extrabold mt-6 text-black">
+            Sign Up
+          </h2>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-6">
+
           {error && (
             <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl border border-red-200 text-sm">
               {error}
@@ -69,7 +85,7 @@ export default function RegisterPage() {
           )}
 
           <div>
-            <Label htmlFor="name" className="text-black font-semibold text-sm">
+            <Label htmlFor="name" className="font-semibold text-sm">
               Name
             </Label>
             <Input
@@ -77,13 +93,13 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Enter your username"
-              className="mt-2 text-black bg-white border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-gray-300 rounded-xl h-12 px-4 shadow-sm"
+              placeholder="Enter your name"
+              className="mt-2 h-12"
             />
           </div>
 
           <div>
-            <Label htmlFor="email" className="text-black font-semibold text-sm">
+            <Label htmlFor="email" className="font-semibold text-sm">
               Email
             </Label>
             <Input
@@ -93,24 +109,29 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Enter your email"
-              className="mt-2 text-black bg-white border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-gray-300 rounded-xl h-12 px-4 shadow-sm"
+              className="mt-2 h-12"
             />
           </div>
 
-          <div className="hidden">
+          <div>
+            <Label htmlFor="phone" className="font-semibold text-sm">
+              Phone
+            </Label>
             <Input
               id="phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+62 xxx"
+              className="mt-2 h-12"
             />
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-black font-semibold text-sm">
+            <Label htmlFor="password" className="font-semibold text-sm">
               Password
             </Label>
+
             <div className="relative mt-2">
               <Input
                 id="password"
@@ -119,18 +140,19 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="text-black bg-white border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-gray-300 rounded-xl h-12 px-4 shadow-sm pr-12"
+                className="h-12 pr-12"
               />
+
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400"
                 onClick={() => {
-                  const input = document.getElementById("password") as HTMLInputElement;
-                  if (input.type === "password") {
-                    input.type = "text";
-                  } else {
-                    input.type = "password";
-                  }
+                  const input = document.getElementById(
+                    "password"
+                  ) as HTMLInputElement;
+
+                  input.type =
+                    input.type === "password" ? "text" : "password";
                 }}
               >
                 <EyeOpenIcon className="h-5 w-5" />
@@ -138,40 +160,23 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center">
-              <input
-                id="remember_me"
-                type="checkbox"
-                className="h-4 w-4 bg-white border-gray-300 rounded text-orange-500 focus:ring-orange-500"
-              />
-              <label htmlFor="remember_me" className="ml-2 block text-sm font-medium text-black">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link href="#" className="font-semibold text-black hover:text-gray-600 underline">
-                Forgot Password?
-              </Link>
-            </div>
-          </div>
-          <p className="mb-5 text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link href="/login" className="text-blue-400 hover:underline">
               Login
             </Link>
           </p>
-          <div className="pt-6 pb-2 flex justify-center">
+
+          <div className="flex justify-center pt-4">
             <Button
               type="submit"
-              className="bg-[#FF9900] hover:bg-[#FF9900]/90 text-white text-base font-semibold rounded-xl px-12 h-12 w-40 shadow-sm transition-colors"
               disabled={loading}
+              className="bg-[#FF9900] hover:bg-[#FF9900]/90 text-white font-semibold rounded-xl w-40 h-12"
             >
-              {loading ? "..." : "Regsiter"}
+              {loading ? "memuat..." : "Register"}
             </Button>
-  
           </div>
+
         </form>
       </div>
     </div>

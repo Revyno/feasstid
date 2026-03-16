@@ -40,12 +40,12 @@ export default function ContactPage() {
               <InfoRow icon="📍" title="Address" text="Feast.id Cuci Sepatu Kilat, Jl. Jatisari 3 No.44, Pepelegi, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256" />
               <InfoRow icon="📞" title="Phone" text="+62 812-3456-7890" />
               <div className="flex items-start gap-4">
-                <div className="bg-[#0B1320] rounded-full p-3 text-white flex-shrink-0">
+                <div className="bg-[#0B1320] rounded-full p-3 text-white ">
                   <EnvelopeClosedIcon className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">Email</h3>
-                  <p className="text-gray-600">info@feast.id</p>
+                  <p className="text-gray-600">feasst.id@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">

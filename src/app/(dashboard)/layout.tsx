@@ -57,13 +57,13 @@ function AppSidebar() {
 
   return (
     <Sidebar className="border-r border-sidebar-border">
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="p-4 flex items-center gap-2">
         <Link href="/dashboard" className="text-xl font-extrabold text-sidebar-foreground">
           <Image src="/logo/1.jpg" alt="Logo" width={50} height={50}/>
         </Link>
-        <h1 className="text-bold text-sidebar-foreground/60 mt-0.5 text-lg">
+       <p className="text-bold text-sidebar-foreground/60 mt-0.5 text-lg">
           Admin Dashboard
-        </h1>
+        </p>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

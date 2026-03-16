@@ -1,5 +1,9 @@
 export type UserRole = "super_admin" | "admin" | "operator";
-export type MembershipLevel = "regular" | "silver" | "gold" | "platinum";
+export type MembershipLevel = 
+"regular" | 
+"silver" | 
+"gold" |
+ "platinum";
 export type OrderStatus =
   | "pending"
   | "in_process"
@@ -29,11 +33,11 @@ export type ServiceCategory =
   | "unyellowing"
   | "repaint"
   | "repair";
-
 export interface User {
   id: string;
   name: string;
   email: string;
+  password: string | null;
   phone: string | null;
   role: UserRole;
   created_at: string;
