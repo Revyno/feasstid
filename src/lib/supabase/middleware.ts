@@ -28,10 +28,12 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const customer = user?.user_metadata?.role === "customer";
+  
 
   // If no user and trying to access protected routes, redirect to login
   if (
-    !user &&
+    !user && 
     (request.nextUrl.pathname.startsWith("/dashboard") ||
      request.nextUrl.pathname.startsWith("/customer"))
   ) {

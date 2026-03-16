@@ -1,11 +1,34 @@
 export type UserRole = "super_admin" | "admin" | "operator";
 export type MembershipLevel = "regular" | "silver" | "gold" | "platinum";
-export type OrderStatus = "pending" | "in_process" | "completed" | "ready" | "delivered" | "cancelled";
+export type OrderStatus =
+  | "pending"
+  | "in_process"
+  | "completed"
+  | "ready"
+  | "delivered"
+  | "cancelled";
 export type DeliveryMethod = "drop_off" | "pickup" | "delivery";
-export type PaymentMethod = "cash" | "transfer" | "ewallet" | "qris" | "debit" | "credit";
-export type PaymentStatus = "pending" | "partial" | "paid" | "refund" | "failed";
+export type PaymentMethod =
+  | "cash"
+  | "transfer"
+  | "ewallet"
+  | "qris"
+  | "debit"
+  | "credit";
+export type PaymentStatus =
+  | "pending"
+  | "partial"
+  | "paid"
+  | "refund"
+  | "failed";
 export type ShoeCondition = "ringan" | "sedang" | "berat";
-export type ServiceCategory = "basic" | "premium" | "deep" | "unyellowing" | "repaint" | "repair";
+export type ServiceCategory =
+  | "basic"
+  | "premium"
+  | "deep"
+  | "unyellowing"
+  | "repaint"
+  | "repair";
 
 export interface User {
   id: string;
@@ -21,6 +44,7 @@ export interface Customer {
   id: string;
   name: string;
   email: string;
+  password: string | null;
   phone: string | null;
   address: string | null;
   total_points: number;
