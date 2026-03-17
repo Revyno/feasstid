@@ -26,8 +26,8 @@ export default function Navbar() {
         <Link href="/" className="text-2xl font-extrabold text-white tracking-tight">
           <Image src="/logo/1.jpg" alt="Logo" width={40} height={40} />
         </Link>
-        {/* Desktop Nav */}
-        <div className="hidden md:flex mx-auto items-center gap-8">
+        {/* Desktop Nav - Middle */}
+        <div className="hidden md:flex flex-1 justify-center items-center gap-8">
           {navLinks.map((l) => (
             <Link
               key={l.href}
@@ -41,6 +41,10 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+        </div>
+
+        {/* Login Button - Right */}
+        <div className="hidden md:flex items-center ml-4">
           <Link
             href="/login"
             className="bg-white text-gray-900 px-5 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition-all"

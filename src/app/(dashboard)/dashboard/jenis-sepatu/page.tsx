@@ -64,7 +64,7 @@ export default function JenisSepatuPage() {
           <DialogTrigger render={<Button />}><PlusIcon className="w-4 h-4 mr-2" /> Tambah Jenis</DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editing ? "Edit" : "Tambah"} Jenis Sepatu</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={editing?.id ?? "new"} onSubmit={handleSubmit} className="space-y-4">
               <div><Label>Nama Jenis</Label><Input name="nama_jenis" defaultValue={editing?.nama_jenis ?? ""} required className="mt-1" /></div>
               <div><Label>Merek</Label><Input name="merek" defaultValue={editing?.merek ?? ""} className="mt-1" /></div>
               <div><Label>Bahan</Label><Input name="bahan" defaultValue={editing?.bahan ?? ""} className="mt-1" /></div>

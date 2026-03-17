@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Our Services — Feast.id",
-  description: "Professional shoe, bag, hat & helmet cleaning services with transparent pricing.",
-};
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /* helper */
 function PriceRow({ name, price }: { name: string; price: string }) {
@@ -15,9 +13,9 @@ function PriceRow({ name, price }: { name: string; price: string }) {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children, delay = 0 }: { title: string; children: React.ReactNode; delay?: number }) {
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-12" data-aos="fade-up" data-aos-delay={delay}>
       <div className="bg-white px-8 py-5 border-b">
         <h2 className="text-2xl font-bold text-gray-800 uppercase text-center">{title}</h2>
       </div>
@@ -27,18 +25,47 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function ServicesPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="bg-[#444444] py-16 pt-28 min-h-screen">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <Skeleton className="h-14 w-64 mx-auto rounded-full" />
+          </div>
+          <div className="space-y-12">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white/10 rounded-xl p-8 space-y-4">
+                <Skeleton className="h-8 w-48 mb-6" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-[#444444] py-16 pt-28">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="zoom-in">
           <span className="inline-block border-2 border-white rounded-full px-6 py-3 text-white text-3xl font-bold uppercase">
             Our Services
           </span>
         </div>
 
         {/* SHOES TREATMENT */}
-        <Section title="Shoes Treatment">
+        <Section title="Shoes Treatment" delay={100}>
           <PriceRow name="Sepatu Baby" price="20K" />
           <PriceRow name="Sepatu Warna Gelap Hard Clean" price="35K" />
           <PriceRow name="Sepatu Warna Terang Hard Clean" price="40K" />
@@ -55,7 +82,7 @@ export default function ServicesPage() {
         </Section>
 
         {/* TREATMENT TAS */}
-        <Section title="Treatment Tas">
+        <Section title="Treatment Tas" delay={200}>
           <PriceRow name="Tas Kanvas Kecil" price="25K" />
           <PriceRow name="Tas Kanvas Sedang" price="35K" />
           <PriceRow name="Tas Kanvas Besar" price="50K" />
@@ -68,7 +95,7 @@ export default function ServicesPage() {
         </Section>
 
         {/* ADDITIONAL TREATMENT */}
-        <Section title="Additional Treatment">
+        <Section title="Additional Treatment" delay={300}>
           <PriceRow name="Unyellowing Midsol + Cuci" price="60K" />
           <PriceRow name="Rewhitening Upper + Cuci" price="60K" />
           <PriceRow name="Unyellowing Midsol" price="45K" />
@@ -78,7 +105,7 @@ export default function ServicesPage() {
         </Section>
 
         {/* TOPI, HELM & KOPER */}
-        <Section title="Topi, Helm & Koper">
+        <Section title="Topi, Helm & Koper" delay={400}>
           <div className="bg-gray-50 rounded-lg p-4 mb-4">
             <h4 className="text-lg font-bold text-gray-700 mb-3 border-b-2 border-gray-300 inline-block">TOPI</h4>
             <PriceRow name="Cuci Segala Topi" price="15K" />

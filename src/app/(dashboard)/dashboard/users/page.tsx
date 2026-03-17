@@ -71,7 +71,7 @@ export default function UsersPage() {
           <DialogTrigger render={<Button />}><PlusIcon className="w-4 h-4 mr-2" /> Tambah User</DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editing ? "Edit" : "Tambah"} User</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={editing?.id ?? "new"} onSubmit={handleSubmit} className="space-y-4">
               <div><Label>Nama</Label><Input name="name" defaultValue={editing?.name ?? ""} required className="mt-1" /></div>
               <div><Label>Email</Label><Input name="email" type="email" defaultValue={editing?.email ?? ""} required className="mt-1" /></div>
               <div><Label>Phone</Label><Input name="phone" defaultValue={editing?.phone ?? ""} className="mt-1" /></div>

@@ -71,7 +71,7 @@ export default function LayananPage() {
           <DialogTrigger render={<Button />}><PlusIcon className="w-4 h-4 mr-2" /> Tambah Layanan</DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editing ? "Edit" : "Tambah"} Layanan</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={editing?.id ?? "new"} onSubmit={handleSubmit} className="space-y-4">
               <div><Label>Nama Layanan</Label><Input name="nama_layanan" defaultValue={editing?.nama_layanan ?? ""} required className="mt-1" /></div>
               <div>
                 <Label>Kategori</Label>

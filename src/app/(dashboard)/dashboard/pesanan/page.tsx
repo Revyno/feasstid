@@ -105,7 +105,7 @@ export default function PesananPage() {
             <DialogHeader>
               <DialogTitle>{editing ? "Edit Pesanan" : "Tambah Pesanan"}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={editing?.id ?? "new"} onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label>Customer ID</Label>
                 <Input name="customer_id" defaultValue={editing?.customer_id ?? ""} required className="mt-1" />

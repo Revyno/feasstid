@@ -79,7 +79,7 @@ export default function PelangganPage() {
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editing ? "Edit" : "Tambah"} Pelanggan</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={editing?.id ?? "new"} onSubmit={handleSubmit} className="space-y-4">
               <div><Label>Nama</Label><Input name="name" defaultValue={editing?.name ?? ""} required className="mt-1" /></div>
               <div><Label>Email</Label><Input name="email" type="email" defaultValue={editing?.email ?? ""} required className="mt-1" /></div>
               <div><Label>Phone</Label><Input name="phone" defaultValue={editing?.phone ?? ""} className="mt-1" /></div>

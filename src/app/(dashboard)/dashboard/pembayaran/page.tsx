@@ -79,7 +79,7 @@ export default function PembayaranPage() {
           <DialogTrigger render={<Button />}><PlusIcon className="w-4 h-4 mr-2" /> Tambah Pembayaran</DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{editing ? "Edit" : "Tambah"} Pembayaran</DialogTitle></DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key={editing?.id ?? "new"} onSubmit={handleSubmit} className="space-y-4">
               <div><Label>Pesanan ID</Label><Input name="pesanan_id" defaultValue={editing?.pesanan_id ?? ""} required className="mt-1" /></div>
               <div><Label>Tanggal Pembayaran</Label><Input name="tanggal_pembayaran" type="date" defaultValue={editing?.tanggal_pembayaran ?? new Date().toISOString().slice(0, 10)} required className="mt-1" /></div>
               <div><Label>Jumlah Dibayar</Label><Input name="jumlah_dibayar" type="number" defaultValue={editing?.jumlah_dibayar ?? 0} required className="mt-1" /></div>
