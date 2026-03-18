@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Mail, Phone, Clock, MapPin } from "lucide-react";
 import {
   EnvelopeClosedIcon,
   ClockIcon,
 } from "@radix-ui/react-icons";
+
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -37,8 +39,8 @@ export default function ContactPage() {
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Get In Touch</h2>
             <div className="space-y-6">
-              <InfoRow icon="📍" title="Address" text="Feast.id Cuci Sepatu Kilat, Jl. Jatisari 3 No.44, Pepelegi, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256" />
-              <InfoRow icon="📞" title="Phone" text="+62 812-3456-7890" />
+              <InfoRow icon={<MapPin />} title="Address" text="Feast.id Cuci Sepatu Kilat, Jl. Jatisari 3 No.44, Pepelegi, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256" />
+              <InfoRow icon={<Phone />} title="Phone" text="+62 812-3456-7890" />
               <div className="flex items-start gap-4">
                 <div className="bg-[#0B1320] rounded-full p-3 text-white ">
                   <EnvelopeClosedIcon className="w-5 h-5" />
@@ -112,7 +114,7 @@ export default function ContactPage() {
   );
 }
 
-function InfoRow({ icon, title, text }: { icon: string; title: string; text: string }) {
+function InfoRow({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
     <div className="flex items-start gap-4">
       <div className="bg-[#0B1320] rounded-full p-3 text-white flex-shrink-0 w-11 h-11 flex items-center justify-center text-lg">

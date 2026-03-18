@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
 
 const WhatsAppButton = () => {
   // Replace with the actual phone number from the branch locations or a general one
-  const phoneNumber = "6285156550772"; // Using a placeholder or common number if found
+  const phoneNumber = "6282132897760"; // Using a placeholder or common number if found
   const message = "Halo Feast.id, saya ingin bertanya tentang layanan cuci sepatu.";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

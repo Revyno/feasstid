@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   description: "Expert shoe cleaning service in Sidoarjo. From sneakers to leathers, we treat them with the professional care they deserve.",
 };
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,8 +27,15 @@ export default function RootLayout({
         className="antialiased font-sans"
         suppressHydrationWarning
       >
-        {children}
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
