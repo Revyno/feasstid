@@ -75,7 +75,11 @@ export default function RegisterPaymentPage() {
 
     const { error: uploadError } = await supabase.storage
       .from('photos')
-      .upload(filePath, file);
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: file.type
+      });
 
     if (uploadError) throw uploadError;
     
@@ -329,7 +333,7 @@ export default function RegisterPaymentPage() {
                 </Button>
                 <Button 
                     onClick={handleSubmit}
-                    className="h-14 px-12 rounded-2xl font-black text-white bg-orange-500 hover:bg-orange-600 shadow-xl shadow-orange-100 transition-all hover:scale-105 active:scale-95 text-lg"
+                    className="h-14 px-12 rounded-2xl font-black text-white bg-orange-500 hover:bg-orange-600 shadow-xl  transition-all hover:scale-105 active:scale-95 text-lg"
                 >
                     Submit Payment
                 </Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { 
   Table, 
@@ -24,7 +25,8 @@ import {
   ChevronRight,
   MoreVertical,
   Truck,
-  Download
+  Download,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import { 
@@ -34,7 +36,13 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 const orderStatusMap: Record<string, { label: string; color: string; icon?: any }> = {
   pending: { label: "Menunggu", color: "bg-orange-100 text-orange-600 border-orange-200" },
@@ -52,13 +60,17 @@ const paymentStatusMap: Record<string, { label: string; color: string }> = {
 };
 
 import { getCustomerSession } from "@/lib/auth-utils";
-import { ca } from "date-fns/locale";
 
 export default function CustomerOrdersPage() {
+  const router = useRouter();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: undefined,
+    to: undefined,
+  });
 
   useEffect(() => {
     async function loadOrders() {
@@ -87,6 +99,31 @@ export default function CustomerOrdersPage() {
     loadOrders();
   }, []);
 
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch = order.kode_pesanan.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === "all" || order.status === statusFilter || order.status_bayar === statusFilter;
+    
+    let matchesDate = true;
+    if (dateRange.from || dateRange.to) {
+      const orderDate = new Date(order.tanggal_pesanan);
+      orderDate.setHours(0, 0, 0, 0);
+      
+      if (dateRange.from) {
+        const fromDate = new Date(dateRange.from);
+        fromDate.setHours(0, 0, 0, 0);
+        if (orderDate < fromDate) matchesDate = false;
+      }
+      
+      if (dateRange.to) {
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(0, 0, 0, 0);
+        if (orderDate > toDate) matchesDate = false;
+      }
+    }
+
+    return matchesSearch && matchesStatus && matchesDate;
+  });
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -94,7 +131,7 @@ export default function CustomerOrdersPage() {
           <h1 className="text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Pesanan Saya</h1>
           <p className="text-gray-500 dark:text-gray-400 text-lg">Kelola dan pantau status laundry Anda secara real-time.</p>
         </div>
-        <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl h-12 p-0 shadow-lg shadow-orange-200 transition-all hover:scale-105 active:scale-95 overflow-hidden">
+        <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl h-12 p-0 shadow-lg  transition-all hover:scale-105 active:scale-95 overflow-hidden">
           <Link href="/customer/pesanan/create" className="flex items-center gap-2 px-6 h-full">
             <Plus className="w-5 h-5 stroke-[3px]" />
             <span className="font-bold text-base">New Pesanan</span>
@@ -105,7 +142,7 @@ export default function CustomerOrdersPage() {
       <div className="bg-white dark:bg-gray-900 p-2 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
         {/* Filters Area */}
         <div className="p-6 pb-2 flex flex-wrap items-center gap-4">
-          <div className="relative flex-1  group">
+          <div className="relative flex-1 min-w-[200px] group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
             <Input 
               placeholder="Cari kode pesanan..." 
@@ -116,8 +153,8 @@ export default function CustomerOrdersPage() {
           </div>
           
           <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "all")}>
-            <SelectTrigger className=" h-12 rounded-2xl border-orange-500 bg-orange-500 text-white font-bold px-5 focus:ring-0">
-              <SelectValue placeholder="Semua Status" />
+            <SelectTrigger className="h-12 min-w-[160px] rounded-2xl border-orange-500 bg-orange-500 text-white font-bold px-5 focus:ring-0">
+              <SelectValue placeholder="Status Pesanan" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
               <SelectItem value="all">Semua Status</SelectItem>
@@ -128,45 +165,55 @@ export default function CustomerOrdersPage() {
             </SelectContent>
           </Select>
 
-          {/* <Button variant="outline" className="h-12 px-5 rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2">
-             Status Bayar
-             < ChevronDown className="w-4 h-4" />
-             <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "all")}>
-                <SelectTrigger className="hidden" />
-                <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
-                    <SelectItem value="all">Semua Status</SelectItem>
-                    <SelectItem value="paid">Lunas</SelectItem>
-                    <SelectItem value="pending">Menunggu</SelectItem>
-                    <SelectItem value="failed">Gagal</SelectItem>
-                    <SelectItem value="refund">Refund</SelectItem>
-                </SelectContent>
-             </Select>
-          </Button> */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className={cn(
+                "h-12 px-5 rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2",
+                (dateRange.from || dateRange.to) && "bg-orange-100"
+              )}>
+                <CalendarIcon className="w-4 h-4" />
+                {dateRange.from ? (
+                  dateRange.to ? (
+                    <>
+                      {format(dateRange.from, "dd MMM")} - {format(dateRange.to, "dd MMM")}
+                    </>
+                  ) : (
+                    format(dateRange.from, "dd MMM yyyy")
+                  )
+                ) : (
+                  <span>Filter Tanggal</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 rounded-2xl border-none shadow-2xl" align="end">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={dateRange.from}
+                selected={{
+                  from: dateRange.from,
+                  to: dateRange.to,
+                }}
+                onSelect={(range: any) => setDateRange({ from: range?.from, to: range?.to })}
+                numberOfMonths={2}
+                className="rounded-2xl border border-gray-100 bg-white dark:bg-gray-900"
+              />
+            </PopoverContent>
+          </Popover>
 
-            <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "all")}>
-              <SelectTrigger className="h-12 px-5 rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2">
-                Status Bayar
-              </SelectTrigger>
-               <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
-                <SelectItem value="all">Semua Status</SelectItem>
-                <SelectItem value="paid">Lunas</SelectItem>
-                <SelectItem value="pending">Menunggu</SelectItem>
-                <SelectItem value="failed">Gagal</SelectItem>
-                <SelectItem value="refund">Refund</SelectItem>
-             </SelectContent>
-            </Select>
-
-          {/* <Button variant="outline" className="h-12 px-5 rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2">
-             <CalendarIcon className="w-4 h-4" />
-             Filter Tanggal
-          </Button> */}
-         {/* <Calendar mode ="range" className="w-full sm:w-auto rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2 h-12 px-5" /> */}
-            {/* add calender */}
-          <Button variant="outline" className="h-12 px-5 rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2">
-              <CalendarIcon className="w-4 h-4" />
-              Filter Tanggal
-          </Button>
-
+          {(search || statusFilter !== "all" || dateRange.from || dateRange.to) && (
+            <Button 
+              variant="ghost" 
+              onClick={() => {
+                setSearch("");
+                setStatusFilter("all");
+                setDateRange({ from: undefined, to: undefined });
+              }}
+              className="h-12 px-4 rounded-xl text-gray-400 hover:text-red-500 gap-2 font-bold"
+            >
+              <X className="w-4 h-4" /> Reset
+            </Button>
+          )}
         </div>
 
         {/* Table Area */}
@@ -191,9 +238,13 @@ export default function CustomerOrdersPage() {
                     <TableCell colSpan={8} className="py-8 px-8"><div className="h-4 bg-gray-100 rounded w-full" /></TableCell>
                   </TableRow>
                 ))
-              ) : orders.length > 0 ? (
-                orders.map((order) => (
-                  <TableRow key={order.id} className="group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors border-b-gray-50 dark:border-b-gray-800 last:border-0 cursor-pointer">
+              ) : filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => (
+                  <TableRow 
+                    key={order.id} 
+                    onClick={() => router.push(`/customer/pesanan/${order.id}`)}
+                    className="group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors border-b-gray-50 dark:border-b-gray-800 last:border-0 cursor-pointer"
+                  >
                     <TableCell className="py-6 px-8">
                        <Link href={`/customer/pesanan/${order.id}`}>
                         <span className="font-black text-orange-500 group-hover:underline decoration-2 underline-offset-4">{order.kode_pesanan}</span>
@@ -258,7 +309,7 @@ export default function CustomerOrdersPage() {
         {/* Pagination Footer */}
         <div className="p-8 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
             <p className="text-gray-500 dark:text-gray-400 font-medium">
-                Menampilkan <span className="text-gray-900 dark:text-gray-100 font-bold">1 sampai 4</span> dari <span className="text-gray-900 dark:text-gray-100 font-bold">42</span> pesanan
+                Menampilkan <span className="text-gray-900 dark:text-gray-100 font-bold">{filteredOrders.length}</span> dari <span className="text-gray-900 dark:text-gray-100 font-bold">{orders.length}</span> pesanan
             </p>
             
             <div className="flex items-center gap-2">
@@ -266,7 +317,7 @@ export default function CustomerOrdersPage() {
                     <ChevronLeft className="w-5 h-5" />
                 </Button>
                 <div className="flex items-center gap-1">
-                    <Button className="w-10 h-10 rounded-xl bg-orange-500 text-white font-bold shadow-lg shadow-orange-100">1</Button>
+                    <Button className="w-10 h-10 rounded-xl bg-orange-500 text-white font-bold shadow-lg">1</Button>
                     <Button variant="ghost" className="w-10 h-10 rounded-xl text-gray-400 font-bold hover:text-orange-500">2</Button>
                     <Button variant="ghost" className="w-10 h-10 rounded-xl text-gray-400 font-bold hover:text-orange-500">3</Button>
                     <span className="text-gray-300 px-1">...</span>

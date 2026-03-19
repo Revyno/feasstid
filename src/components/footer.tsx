@@ -14,7 +14,7 @@ export default function Footer() {
           <div className="md:col-span-1">
            <Image src="/logo/1.jpg" alt="Logo" width={40} height={40} />
             <p className="text-sm leading-relaxed">
-              Expert shoe cleaning service — bringing your favorite footwear back to life since 2023.
+              Expert shoe cleaning service — bringing your favorite footwear back to life since 2025.
             </p>
           </div>
 

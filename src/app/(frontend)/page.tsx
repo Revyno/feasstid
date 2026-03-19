@@ -617,7 +617,7 @@ export default function Home() {
                 </div>
                 <div className="flex gap-4">
                   <a
-                    href="https://wa.me/6281234567890"
+                    href="https://wa.me/6282132897760"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-white border border-gray-300 text-gray-800 px-6 py-2 rounded-full hover:bg-gray-50 transition duration-300 text-sm font-medium"

@@ -12,6 +12,17 @@ import {
 } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Pesanan } from "@/types/database";
+import { getCustomerSession } from "@/lib/auth-utils";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Stats {
   totalOrders: number;
@@ -32,34 +43,26 @@ export default function CustomerDashboardPage() {
 
   useEffect(() => {
     async function load() {
-      const supabase = createClient();
-      const { data: userData } = await supabase.auth.getUser();
+      const customerSession = getCustomerSession();
       
-      if (!userData?.user) return;
-
-      const { data: customerData } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("user_id", userData.user.id)
-        .single();
-
-      if (!customerData) {
-         setLoading(false);
-         return;
+      if (!customerSession) {
+        setLoading(false);
+        return;
       }
 
+      const supabase = createClient();
       const { data: ordersData } = await supabase
         .from("pesanans")
         .select("*")
-        .eq("customer_id", customerData.id)
+        .eq("customer_id", customerSession.id)
         .order("created_at", { ascending: false });
 
       const myOrders = ordersData ?? [];
       
       const totalOrders = myOrders.length;
-      const ordersInProcess = myOrders.filter((o) => o.status === "processing").length;
+      const ordersInProcess = myOrders.filter((o) => o.status === "in_process").length;
       const pendingOrders = myOrders.filter((o) => o.status === "pending").length;
-      const readyForPickup = myOrders.filter((o) => o.status === "ready_to_deliver" || o.status === "ready_for_pickup").length;
+      const readyForPickup = myOrders.filter((o) => o.status === "ready").length;
 
       setStats({
         totalOrders,
@@ -140,24 +143,75 @@ export default function CustomerDashboardPage() {
         </div>
       )}
 
-      <Card>
-          <CardHeader>
-              <CardTitle>Customer Current Orders</CardTitle>
+      <Card className="rounded-[2.5rem] border-none shadow-sm overflow-hidden">
+          <CardHeader className="p-8 pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Pesanan Terakhir</CardTitle>
+                <Link href="/customer/pesanan" className="text-sm font-bold text-orange-500 hover:underline decoration-2">Lihat Semua</Link>
+              </div>
           </CardHeader>
-          <CardContent className="min-h-[300px] flex flex-col items-center justify-center text-center">
-             <div className="bg-orange-50 p-4 rounded-full mb-4">
-                  <ReaderIcon className="w-8 h-8 text-orange-500" />
-             </div>
-             <h3 className="text-lg font-bold mb-2">No current orders</h3>
-             <p className="text-gray-500 max-w-sm mb-6">
-                 It looks like you dont have any active laundry orders at the moment. Need a fresh start?
-             </p>
-             <Button className="bg-orange-500 hover:bg-orange-600 text-white gap-2" type="button">
-                 <Link href="/customer/orders/create" className="flex items-center gap-2">
-                    <PlusIcon className="w-4 h-4" />
-                    Place New Order
-                 </Link>
-             </Button>
+          <CardContent className="p-8 pt-0">
+             {orders.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="hover:bg-transparent border-none">
+                          <TableHead className="font-black text-[10px] uppercase tracking-widest">Kode</TableHead>
+                          <TableHead className="font-black text-[10px] uppercase tracking-widest">Tanggal</TableHead>
+                          <TableHead className="font-black text-[10px] uppercase tracking-widest text-right">Total</TableHead>
+                          <TableHead className="font-black text-[10px] uppercase tracking-widest text-center">Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {orders.slice(0, 5).map((order) => (
+                          <TableRow key={order.id} className="group hover:bg-gray-50 dark:hover:bg-gray-800/50 border-gray-50 transition-colors">
+                            <TableCell className="py-4">
+                              <Link href={`/customer/pesanan/${order.id}`}>
+                                <span className="font-black text-orange-500 group-hover:underline">{order.kode_pesanan}</span>
+                              </Link>
+                            </TableCell>
+                            <TableCell className="py-4 text-sm font-medium text-gray-500">
+                                {new Date(order.tanggal_pesanan).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })}
+                            </TableCell>
+                            <TableCell className="py-4 text-right font-bold text-gray-900 dark:text-gray-100">
+                                Rp {order.total_harga.toLocaleString('id-ID')}
+                            </TableCell>
+                            <TableCell className="py-4 text-center">
+                                <Badge className={cn(
+                                    "px-3 py-1 rounded-full font-bold text-[10px] uppercase border bg-transparent",
+                                    order.status === 'pending' ? "text-orange-600 border-orange-200" :
+                                    order.status === 'in_process' ? "text-blue-600 border-blue-200" :
+                                    order.status === 'ready' ? "text-emerald-600 border-emerald-200" :
+                                    "text-gray-500 border-gray-200"
+                                )}>
+                                    {order.status}
+                                </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+             ) : (
+               <div className="min-h-[300px] flex flex-col items-center justify-center text-center py-10">
+                  <div className="bg-orange-50 dark:bg-orange-950/20 p-6 rounded-full mb-6">
+                       <ReaderIcon className="w-10 h-10 text-orange-500" />
+                  </div>
+                  <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-2 uppercase tracking-wide">Belum ada pesanan</h3>
+                  <p className="text-gray-500 dark:text-gray-400 max-w-sm mb-8 font-medium">
+                      Sepertinya Anda belum memiliki riwayat pesanan aktif. Mulai hari ini dengan sepatu yang bersih dan wangi!
+                  </p>
+                  <Link 
+                    href="/customer/pesanan/create" 
+                    className="bg-orange-500 hover:bg-orange-600 text-white gap-2 h-14 px-10 rounded-2xl font-black shadow-xl shadow-orange-100 transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+                  >
+                     <PlusIcon className="w-5 h-5 flex-shrink-0" />
+                     Buat Pesanan Baru
+                  </Link>
+               </div>
+             )}
           </CardContent>
       </Card>
       

@@ -129,6 +129,7 @@ export interface Pembayaran {
   status_pembayaran: PaymentStatus;
   bukti_pembayaran: string | null;
   nomor_referensi: string | null;
+  nomor_resi: string | null;
   user_id: string | null;
   catatan: string | null;
   created_at: string;
