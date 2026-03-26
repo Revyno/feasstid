@@ -44,21 +44,23 @@ export default function CustomerLayout({
         <CustomerSidebar />
         <SidebarInset className="flex flex-col w-full overflow-hidden bg-transparent">
           {/* Header */}
-          <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between px-8 bg-transparent">
-            <div className="flex items-center gap-4 flex-1 max-w-xl">
-              <SidebarTrigger className="-ml-1" />
-              <div className="relative w-full group">
+          <header className="sticky top-0 z-30 flex h-14 md:h-20 w-full items-center justify-between px-3 sm:px-6 md:px-8 bg-transparent gap-2">
+            <div className="flex items-center gap-2 md:gap-4 flex-1">
+              <SidebarTrigger className="-ml-1 flex-shrink-0" />
+              {/* Search bar - hidden on mobile */}
+              <div className="relative w-full max-w-sm md:max-w-xl group hidden sm:block">
                 <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
-                <Input 
-                  placeholder="Cari layanan atau bantuan..." 
-                  className="w-full pl-11 h-11 border-none bg-white dark:bg-gray-900 shadow-sm rounded-xl focus-visible:ring-1 focus-visible:ring-orange-500 transition-all text-gray-900 dark:text-gray-100"
+                <Input
+                  placeholder="Cari layanan atau bantuan..."
+                  className="w-full pl-11 h-10 md:h-11 border-none bg-white dark:bg-gray-900 shadow-sm rounded-xl focus-visible:ring-1 focus-visible:ring-orange-500 transition-all text-gray-900 dark:text-gray-100"
                 />
               </div>
             </div>
 
-            <div className="flex items-center gap-4 ml-4">
+            <div className="flex items-center gap-1 md:gap-4 flex-shrink-0">
+              {/* Notification */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setShowNotifications(!showNotifications)}
                   className={cn(
                     "relative p-2 rounded-xl transition-all shadow-sm hover:shadow-md",
@@ -72,7 +74,7 @@ export default function CustomerLayout({
                 {showNotifications && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
-                    <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                    <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                       <div className="p-4 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between">
                         <h3 className="font-bold text-gray-900 dark:text-white">Notifikasi</h3>
                         <span className="text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full uppercase">3 Baru</span>
@@ -101,8 +103,9 @@ export default function CustomerLayout({
                 )}
               </div>
 
+              {/* Theme toggle */}
               {mounted && (
-                <button 
+                <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                   className="p-2 text-gray-400 hover:text-orange-500 hover:bg-white dark:hover:bg-gray-800 rounded-xl transition-all shadow-sm hover:shadow-md bg-white dark:bg-gray-900"
                   title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
@@ -110,23 +113,24 @@ export default function CustomerLayout({
                   {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </button>
               )}
-              
-              <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-800">
-                <Avatar className="h-10 w-10 border-2 border-white shadow-md ring-1 ring-gray-100 transition-transform hover:scale-105 cursor-pointer">
+
+              {/* User avatar */}
+              <div className="flex items-center gap-2 pl-2 md:pl-4 border-l border-gray-200 dark:border-gray-800">
+                <Avatar className="h-8 w-8 md:h-10 md:w-10 border-2 border-white shadow-md ring-1 ring-gray-100 transition-transform hover:scale-105 cursor-pointer">
                   <AvatarImage src={avatarUrl} />
                   <AvatarFallback>{username.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="hidden lg:flex flex-col items-start">
-                   <div className="flex items-center gap-1 cursor-pointer group">
-                      <span className="text-sm font-bold text-gray-900 dark:text-gray-100 group-hover:text-orange-500 transition-colors">{username}</span>
-                      <ChevronDown className="h-3 w-3 text-gray-400 group-hover:text-orange-500 transition-colors" />
-                   </div>
+                  <div className="flex items-center gap-1 cursor-pointer group">
+                    <span className="text-sm font-bold text-gray-900 dark:text-gray-100 group-hover:text-orange-500 transition-colors">{username}</span>
+                    <ChevronDown className="h-3 w-3 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                  </div>
                 </div>
               </div>
             </div>
           </header>
 
-          <main className="flex-1 px-8 pb-8 overflow-y-auto">
+          <main className="flex-1 px-3 sm:px-6 md:px-8 pb-8 overflow-y-auto">
             <div className="max-w-[1400px] mx-auto">
               {children}
             </div>
@@ -135,4 +139,4 @@ export default function CustomerLayout({
       </div>
     </SidebarProvider>
   );
-}
+}

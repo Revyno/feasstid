@@ -207,15 +207,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <AppSidebar user={user} />
         <SidebarInset className="flex flex-col w-full min-h-screen bg-gray-50 dark:bg-gray-950">
           {/* Header */}
-          <header className="h-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 flex items-center px-6 gap-4 sticky top-0 z-30 transition-shadow duration-300">
-            <SidebarTrigger className="text-gray-400 hover:text-orange-500 transition-colors" />
+          <header className="h-14 md:h-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 flex items-center px-3 md:px-6 gap-2 md:gap-4 sticky top-0 z-30 transition-shadow duration-300">
+            <SidebarTrigger className="text-gray-400 hover:text-orange-500 transition-colors flex-shrink-0" />
             
-            <div className="h-4 w-px bg-gray-100 dark:bg-gray-800 mx-2" />
+            <div className="h-4 w-px bg-gray-100 dark:bg-gray-800 mx-1 md:mx-2 flex-shrink-0" />
 
-            <nav className="flex items-center gap-2 text-xs font-bold text-gray-400 flex-1 overflow-hidden">
+            <nav className="hidden sm:flex items-center gap-2 text-xs font-bold text-gray-400 flex-1 overflow-hidden">
               {breadcrumb.map((seg, idx) => (
                 <React.Fragment key={seg.href}>
-                  {idx > 0 && <ChevronRight className="w-3 h-3 text-gray-200" />}
+                  {idx > 0 && <ChevronRight className="w-3 h-3 text-gray-200 flex-shrink-0" />}
                   <Link 
                     href={seg.href} 
                     className={cn(
@@ -228,23 +228,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </React.Fragment>
               ))}
             </nav>
+            {/* Mobile: page title only */}
+            <span className="sm:hidden flex-1 text-sm font-black text-gray-900 dark:text-gray-100 truncate capitalize">
+              {breadcrumb[breadcrumb.length - 1]?.label || "Dashboard"}
+            </span>
 
-            <div className="flex items-center gap-3">
-              <button className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all border border-transparent hover:border-orange-100">
+            <div className="flex items-center gap-1 md:gap-3 flex-shrink-0">
+              <button className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all">
                 <Bell className="w-4 h-4" />
               </button>
               
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all border border-transparent hover:border-orange-100"
+                className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all"
               >
                 {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
 
-              <div className="w-px h-6 bg-gray-100 dark:bg-gray-800 mx-1" />
+              <div className="hidden sm:block w-px h-6 bg-gray-100 dark:bg-gray-800 mx-1" />
 
               <div className="flex items-center gap-2">
-                 <Avatar className="w-9 h-9 border-2 border-white dark:border-gray-800 shadow-sm">
+                 <Avatar className="w-8 h-8 md:w-9 md:h-9 border-2 border-white dark:border-gray-800 shadow-sm">
                    <AvatarFallback className="bg-gray-950 text-white text-[11px] font-black">
                      {initials}
                    </AvatarFallback>
@@ -253,7 +257,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </header>
 
-          <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500 overflow-y-auto">
+          <main className="flex-1 p-4 md:p-6 lg:p-8 animate-in fade-in duration-500 overflow-y-auto">
             {children}
           </main>
         </SidebarInset>

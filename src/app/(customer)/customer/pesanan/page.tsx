@@ -125,36 +125,36 @@ export default function CustomerOrdersPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
         <div className="space-y-1">
-          <h1 className="text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Pesanan Saya</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-lg">Kelola dan pantau status laundry Anda secara real-time.</p>
+          <h1 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Pesanan Saya</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm md:text-lg">Kelola dan pantau status laundry Anda secara real-time.</p>
         </div>
-        <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl h-12 p-0 shadow-lg  transition-all hover:scale-105 active:scale-95 overflow-hidden">
-          <Link href="/customer/pesanan/create" className="flex items-center gap-2 px-6 h-full">
-            <Plus className="w-5 h-5 stroke-[3px]" />
-            <span className="font-bold text-base">New Pesanan</span>
+        <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl h-10 md:h-12 p-0 shadow-lg transition-all hover:scale-105 active:scale-95 overflow-hidden self-start sm:self-auto">
+          <Link href="/customer/pesanan/create" className="flex items-center gap-2 px-4 md:px-6 h-full">
+            <Plus className="w-4 h-4 md:w-5 md:h-5 stroke-[3px]" />
+            <span className="font-bold text-sm md:text-base">New Pesanan</span>
           </Link>
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 p-2 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 p-2 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
         {/* Filters Area */}
-        <div className="p-6 pb-2 flex flex-wrap items-center gap-4">
-          <div className="relative flex-1 min-w-[200px] group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
-            <Input 
-              placeholder="Cari kode pesanan..." 
-              className="pl-12 h-12 border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 transition-all text-base dark:text-gray-100"
+        <div className="p-3 md:p-6 pb-2 flex flex-wrap items-center gap-2 md:gap-4">
+          <div className="relative flex-1 min-w-[140px] group">
+            <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+            <Input
+              placeholder="Cari kode..."
+              className="pl-9 md:pl-12 h-10 md:h-12 border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl md:rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 transition-all text-sm md:text-base dark:text-gray-100"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          
+
           <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "all")}>
-            <SelectTrigger className="h-12 min-w-[160px] rounded-2xl border-orange-500 bg-orange-500 text-white font-bold px-5 focus:ring-0">
-              <SelectValue placeholder="Status Pesanan" />
+            <SelectTrigger className="h-10 md:h-12 min-w-[130px] md:min-w-[160px] rounded-xl md:rounded-2xl border-orange-500 bg-orange-500 text-white font-bold px-3 md:px-5 focus:ring-0 text-sm">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
               <SelectItem value="all">Semua Status</SelectItem>
@@ -168,21 +168,21 @@ export default function CustomerOrdersPage() {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className={cn(
-                "h-12 px-5 rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2",
+                "h-10 md:h-12 px-3 md:px-5 rounded-xl md:rounded-2xl border-orange-500 text-orange-500 font-bold bg-orange-50 hover:bg-orange-100 gap-2 border-2 text-sm",
                 (dateRange.from || dateRange.to) && "bg-orange-100"
               )}>
                 <CalendarIcon className="w-4 h-4" />
-                {dateRange.from ? (
-                  dateRange.to ? (
-                    <>
-                      {format(dateRange.from, "dd MMM")} - {format(dateRange.to, "dd MMM")}
-                    </>
+                <span className="hidden sm:inline">
+                  {dateRange.from ? (
+                    dateRange.to ? (
+                      <>{format(dateRange.from, "dd MMM")} - {format(dateRange.to, "dd MMM")}</>
+                    ) : (
+                      format(dateRange.from, "dd MMM yyyy")
+                    )
                   ) : (
-                    format(dateRange.from, "dd MMM yyyy")
-                  )
-                ) : (
-                  <span>Filter Tanggal</span>
-                )}
+                    "Tanggal"
+                  )}
+                </span>
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 rounded-2xl border-none shadow-2xl" align="end">
@@ -195,21 +195,21 @@ export default function CustomerOrdersPage() {
                   to: dateRange.to,
                 }}
                 onSelect={(range: any) => setDateRange({ from: range?.from, to: range?.to })}
-                numberOfMonths={2}
+                numberOfMonths={1}
                 className="rounded-2xl border border-gray-100 bg-white dark:bg-gray-900"
               />
             </PopoverContent>
           </Popover>
 
           {(search || statusFilter !== "all" || dateRange.from || dateRange.to) && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => {
                 setSearch("");
                 setStatusFilter("all");
                 setDateRange({ from: undefined, to: undefined });
               }}
-              className="h-12 px-4 rounded-xl text-gray-400 hover:text-red-500 gap-2 font-bold"
+              className="h-10 md:h-12 px-3 md:px-4 rounded-xl text-gray-400 hover:text-red-500 gap-2 font-bold text-sm"
             >
               <X className="w-4 h-4" /> Reset
             </Button>

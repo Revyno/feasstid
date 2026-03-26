@@ -106,13 +106,13 @@ export default function CustomerDashboardPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-xl md:text-2xl font-bold">Dashboard</h1>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {Array(4)
             .fill(0)
             .map((_, i) => (
@@ -127,30 +127,30 @@ export default function CustomerDashboardPage() {
             ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {cards.map((c, i) => (
             <Card key={i}>
-              <CardContent className="p-6 pt-4 relative">
-                 <div className="flex justify-between items-start mb-4">
+              <CardContent className="p-4 md:p-6 pt-3 md:pt-4 relative">
+                 <div className="flex justify-between items-start mb-3 md:mb-4">
                     <div className={`${c.bg} p-2 rounded-lg`}>{c.icon}</div>
-                    {c.desc && <span className="text-xs font-semibold bg-gray-100 px-2 py-1 rounded text-gray-500">{c.desc}</span>}
+                    {c.desc && <span className="text-xs font-semibold bg-gray-100 px-2 py-1 rounded text-gray-500 hidden sm:block">{c.desc}</span>}
                  </div>
-                <div className="text-sm font-medium text-muted-foreground mb-1">{c.title}</div>
-                <div className="text-3xl font-bold">{c.value}</div>
+                <div className="text-xs sm:text-sm font-medium text-muted-foreground mb-1 leading-tight">{c.title}</div>
+                <div className="text-2xl md:text-3xl font-bold">{c.value}</div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
 
-      <Card className="rounded-[2.5rem] border-none shadow-sm overflow-hidden">
-          <CardHeader className="p-8 pb-4">
+      <Card className="rounded-[2rem] border-none shadow-sm overflow-hidden">
+          <CardHeader className="p-5 sm:p-8 pb-3 sm:pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Pesanan Terakhir</CardTitle>
+                <CardTitle className="text-lg sm:text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Pesanan Terakhir</CardTitle>
                 <Link href="/customer/pesanan" className="text-sm font-bold text-orange-500 hover:underline decoration-2">Lihat Semua</Link>
               </div>
           </CardHeader>
-          <CardContent className="p-8 pt-0">
+          <CardContent className="p-5 sm:p-8 pt-0">
              {orders.length > 0 ? (
                 <div className="space-y-4">
                   <div className="overflow-x-auto">
