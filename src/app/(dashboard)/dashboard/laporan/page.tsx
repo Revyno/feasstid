@@ -3,9 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { LaporanLaundry } from "@/types/database";
-import { Plus, Search, SlidersHorizontal, Download, Eye, Pencil, Copy, Printer, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, SlidersHorizontal, Download, Eye, Pencil, Copy, Printer, Trash2, ChevronLeft, ChevronRight, FileSpreadsheet } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -17,6 +18,7 @@ export default function LaporanPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [exporting, setExporting] = useState(false);
 
   const supabase = createClient();
 
@@ -29,12 +31,12 @@ export default function LaporanPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  function fmt(v: number) { 
-    return `Rp ${Number(v).toLocaleString("id-ID")}`; 
+  function fmt(v: number) {
+    return `Rp ${Number(v).toLocaleString("id-ID")}`;
   }
 
-  const filtered = items.filter(l => 
-    l.periode_awal.includes(search) || 
+  const filtered = items.filter(l =>
+    l.periode_awal.includes(search) ||
     l.periode_akhir.includes(search) ||
     l.total_pendapatan.toString().includes(search)
   );
@@ -65,6 +67,66 @@ export default function LaporanPage() {
     fetchData();
   }
 
+  // ─── EXPORT EXCEL ─────────────────────────────────────────────────────────
+  function exportToExcel(dataToExport: LaporanLaundry[]) {
+    setExporting(true);
+
+    try {
+      const rows = dataToExport.map((l, idx) => ({
+        "No": idx + 1,
+        "Periode Awal": l.periode_awal,
+        "Periode Akhir": l.periode_akhir,
+        "Total Pendapatan (Rp)": l.total_pendapatan,
+        "Total Pengeluaran (Rp)": l.total_pengeluaran,
+        "Total Profit (Rp)": l.total_profit,
+        "Total Pesanan": l.total_pesanan,
+        "Total Sepatu": l.total_sepatu ?? 0,
+        "Pesanan Selesai": l.pesanan_selesai ?? 0,
+        "Pesanan Batal": l.pesanan_batal ?? 0,
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+
+      // Column widths
+      ws["!cols"] = [
+        { wch: 5 },   // No
+        { wch: 14 },  // Periode Awal
+        { wch: 14 },  // Periode Akhir
+        { wch: 22 },  // Total Pendapatan
+        { wch: 22 },  // Total Pengeluaran
+        { wch: 20 },  // Total Profit
+        { wch: 14 },  // Total Pesanan
+        { wch: 14 },  // Total Sepatu
+        { wch: 16 },  // Pesanan Selesai
+        { wch: 14 },  // Pesanan Batal
+      ];
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Laporan Laundry");
+
+      const today = new Date().toISOString().slice(0, 10);
+      const fileName = `Laporan_Laundry_${today}.xlsx`;
+
+      XLSX.writeFile(wb, fileName);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  function handleExportAll() {
+    exportToExcel(filtered);
+  }
+
+  function handleExportSelected() {
+    const selectedData = items.filter(i => selected.has(i.id));
+    if (selectedData.length === 0) {
+      alert("Pilih setidaknya satu laporan untuk diexport.");
+      return;
+    }
+    exportToExcel(selectedData);
+  }
+  // ──────────────────────────────────────────────────────────────────────────
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -92,7 +154,7 @@ export default function LaporanPage() {
       <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
         {/* Toolbar */}
         <div className="p-5 flex flex-wrap items-center gap-4">
-          <div className="relative flex-1 min-w-[300px]">
+          <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -102,14 +164,27 @@ export default function LaporanPage() {
               className="w-full pl-11 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm focus:ring-2 focus:ring-orange-400 focus:bg-white dark:focus:bg-gray-700 transition-all placeholder:text-gray-400"
             />
           </div>
-          <div className="flex items-center gap-2 ml-auto">
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-orange-500 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all">
-              <SlidersHorizontal className="w-4 h-4" />
-              Filter
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-xl shadow-sm transition-all shadow-orange-100 dark:shadow-none">
-              <Download className="w-4 h-4" />
-              Export
+          <div className="flex items-center gap-2 ml-auto flex-wrap">
+            {/* Export selected (only show when rows selected) */}
+            {selected.size > 0 && (
+              <button
+                onClick={handleExportSelected}
+                disabled={exporting}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-900/50 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-950/50 transition-all"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                Export {selected.size} Dipilih
+              </button>
+            )}
+
+            {/* Export All */}
+            <button
+              onClick={handleExportAll}
+              disabled={exporting || filtered.length === 0}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-sm transition-all shadow-orange-100 dark:shadow-none"
+            >
+              <Download className={`w-4 h-4 ${exporting ? "animate-bounce" : ""}`} />
+              {exporting ? "Mengeksport..." : "Export Excel"}
             </button>
           </div>
         </div>
@@ -167,19 +242,26 @@ export default function LaporanPage() {
                   <td className="px-4 py-4 text-sm font-black text-emerald-500">{fmt(l.total_profit)}</td>
                   <td className="px-4 py-4 text-center text-sm font-bold text-gray-600 dark:text-gray-400">{l.total_pesanan}</td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-1 hover:text-orange-500 transition-colors"><Eye className="w-4 h-4" /></button>
-                      <button 
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {/* Download single row */}
+                      <button
+                        title="Download Excel baris ini"
+                        onClick={() => exportToExcel([l])}
+                        className="p-1.5 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 text-gray-400 transition-colors"
+                      >
+                        <FileSpreadsheet className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => router.push(`/dashboard/laporan/${l.id}/edit`)}
-                        className="p-1 hover:text-orange-500 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-orange-50 hover:text-orange-500 text-gray-400 transition-colors"
+                        title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
-                      <button className="p-1 hover:text-orange-500 transition-colors"><Copy className="w-4 h-4" /></button>
-                      <button className="p-1 hover:text-orange-500 transition-colors"><Printer className="w-4 h-4" /></button>
-                      <button 
+                      <button
                         onClick={() => handleDelete(l.id)}
-                        className="p-1 hover:text-red-500 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-gray-400 transition-colors"
+                        title="Hapus"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -192,10 +274,17 @@ export default function LaporanPage() {
         </div>
 
         {/* Footer */}
-        <div className="p-5 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/30 border-t border-gray-50 dark:border-gray-800">
-          <p className="text-xs font-bold text-gray-400">
-            Menampilkan {paginated.length > 0 ? (page - 1) * pageSize + 1 : 0}-{Math.min(page * pageSize, filtered.length)} dari {filtered.length} laporan
-          </p>
+        <div className="p-5 flex flex-wrap items-center justify-between gap-3 bg-gray-50/50 dark:bg-gray-800/30 border-t border-gray-50 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            <p className="text-xs font-bold text-gray-400">
+              Menampilkan {paginated.length > 0 ? (page - 1) * pageSize + 1 : 0}–{Math.min(page * pageSize, filtered.length)} dari {filtered.length} laporan
+            </p>
+            {selected.size > 0 && (
+              <span className="text-xs font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
+                {selected.size} dipilih
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1">
             <button
               disabled={page === 1}

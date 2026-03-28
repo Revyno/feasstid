@@ -94,12 +94,14 @@ export default function LoginPage() {
 
           <div>
             <Label>Email</Label>
+             <div className="relative mt-2">
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+             </div>
           </div>
 
           <div>

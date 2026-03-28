@@ -468,7 +468,7 @@ export default function Home() {
             </div>
             <div className="lg:w-1/2" data-aos="fade-left">
               <Image
-                src="/asset/aboutus.jpg"
+                src="/asset/1.heic"
                 alt="About Us"
                 width={600}
                 height={400}
