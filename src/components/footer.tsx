@@ -47,15 +47,15 @@ export default function Footer() {
               <li>Jl. Jatisari 3 No.44, Pepelegi</li>
               <li>Kec. Waru, Kabupaten Sidoarjo</li>
               <li>+62 812-3456-7890</li>
-              <li>info@feast.id</li>
+              <li>feast.id@gmail.com</li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
+              <a href="https://www.instagram.com/feasst.id?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
                 <InstagramLogoIcon className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
+              {/* <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
                 <TwitterLogoIcon className="w-5 h-5" />
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

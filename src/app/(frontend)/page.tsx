@@ -605,14 +605,14 @@ export default function Home() {
                   <h4 className="font-semibold text-gray-800 mb-2">Jam Operasional:</h4>
                   <ul className="text-gray-600 text-sm space-y-1">
                     <li>
-                      <strong>Senin - Jumat:</strong> 08:00 - 17:00
+                      <strong>Senin - Minggu:</strong> 08:00 - 21:00
                     </li>
-                    <li>
+                    {/* <li>
                       <strong>Sabtu:</strong> 08:00 - 15:00
                     </li>
                     <li>
-                      <strong>Minggu:</strong> Tutup
-                    </li>
+                      <strong>Minggu:</strong> Buka
+                    </li> */}
                   </ul>
                 </div>
                 <div className="flex gap-4">
@@ -625,7 +625,7 @@ export default function Home() {
                     WhatsApp
                   </a>
                   <a
-                    href="https://maps.app.goo.gl/VbfEmekgdUCTWkFo8"
+                    href="https://maps.app.goo.gl/CnkManViDzyAvghP7"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition duration-300 text-sm font-medium"
@@ -638,7 +638,7 @@ export default function Home() {
               {/* Map */}
               <div>
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2028458.4159055245!2d108.52008822500001!3d-6.790184978923435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fb8a85ba549f%3A0xe345db2214716827!2sFeasst.id!5e0!3m2!1sid!2sid!4v1767110611423!5m2!1sid!2sid"
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15827.404562296719!2d112.7128811!3d-7.3705766!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e50029982991%3A0x2f131034964b4157!2sFeasst.id!5e0!3m2!1sid!2sid!4v1774702685736!5m2!1sid!2sid"
                   width="100%"
                   height="300"
                   style={{ border: 0 }}
