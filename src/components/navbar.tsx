@@ -9,7 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import Image from "next/image";
 const navLinks = [
-  { href: "", label: "Home" },
+  { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/gallery", label: "Gallery" },
   { href: "/contact", label: "Contact" },

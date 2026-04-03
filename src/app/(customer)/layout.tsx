@@ -44,7 +44,7 @@ export default function CustomerLayout({
         <CustomerSidebar />
         <SidebarInset className="flex flex-col w-full overflow-hidden bg-transparent">
           {/* Header */}
-          <header className="sticky top-0 z-30 flex h-14 md:h-20 w-full items-center justify-between px-3 sm:px-6 md:px-8 bg-transparent gap-2">
+          <header className="sticky top-0 z-30 flex h-12 md:h-16 w-full items-center justify-between px-3 sm:px-5 md:px-6 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 gap-2">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
               <SidebarTrigger className="-ml-1 flex-shrink-0" />
               {/* Search bar - hidden on mobile */}

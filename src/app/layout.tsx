@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Feast.id",
+  title: "Feastid",
   description: "Expert shoe cleaning service in Sidoarjo. From sneakers to leathers, we treat them with the professional care they deserve.",
 };
 
