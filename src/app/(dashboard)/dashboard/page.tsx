@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [serviceStats, setServiceStats] = useState<ServiceStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("Admin Laundry");
+  const [cabang, setCabang] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -57,6 +58,17 @@ export default function DashboardPage() {
           authUser.user.email?.split("@")[0] ||
           "Admin Laundry"
         );
+        // Baca cabang dari tabel users publik berdasarkan email
+        if (authUser.user.email) {
+          const { data: userData } = await supabase
+            .from("users")
+            .select("cabang")
+            .eq("email", authUser.user.email)
+            .single();
+          if (userData?.cabang) {
+            setCabang(userData.cabang);
+          }
+        }
       }
 
       const [ordersRes, customersRes, paymentsRes, detailRes, layanansRes] = await Promise.all([
@@ -177,7 +189,15 @@ export default function DashboardPage() {
             </span>
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-black text-gray-900 dark:text-gray-100">Welcome</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl md:text-2xl font-black text-gray-900 dark:text-gray-100">Welcome</h1>
+              {cabang && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 rounded-full text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 inline-block"></span>
+                  {cabang}
+                </span>
+              )}
+            </div>
             <p className="text-sm text-gray-500">{userName}</p>
           </div>
         </div>

@@ -84,7 +84,7 @@ const navGroups = [
   },
 ];
 
-function AppSidebar({ user }: { user: User | null }) {
+function AppSidebar({ user, cabang }: { user: User | null; cabang: string | null }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -112,7 +112,11 @@ function AppSidebar({ user }: { user: User | null }) {
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="font-black text-xs text-gray-900 dark:text-gray-100 tracking-tight">FEAST ID</span>
-            <span className="text-[8px] text-gray-400 font-bold uppercase tracking-widest leading-none">Laundry Sepatu</span>
+            {cabang ? (
+              <span className="text-[8px] text-orange-500 font-black uppercase tracking-widest leading-none">{cabang}</span>
+            ) : (
+              <span className="text-[8px] text-gray-400 font-bold uppercase tracking-widest leading-none">Laundry Sepatu</span>
+            )}
           </div>
         </Link>
       </SidebarHeader>
@@ -162,6 +166,9 @@ function AppSidebar({ user }: { user: User | null }) {
           </Avatar>
           <div className="flex flex-col min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
             <span className="text-xs font-black text-gray-900 dark:text-gray-100 truncate tracking-tight">{username}</span>
+            {cabang && (
+              <span className="text-[9px] text-orange-400 font-bold truncate tracking-tight uppercase leading-tight">{cabang}</span>
+            )}
             <span className="text-[10px] text-orange-500 font-bold truncate tracking-tight lowercase">{email}</span>
           </div>
           <button 
@@ -181,6 +188,7 @@ function AppSidebar({ user }: { user: User | null }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
+  const [cabang, setCabang] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -188,6 +196,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const supabase = createClient();
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
+      // Baca cabang dari tabel users publik berdasarkan email
+      if (data.user?.email) {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("cabang")
+          .eq("email", data.user.email)
+          .single();
+        if (userData?.cabang) {
+          setCabang(userData.cabang);
+        }
+      }
     };
     getUser();
   }, []);
@@ -204,7 +223,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 w-full overflow-hidden">
-        <AppSidebar user={user} />
+        <AppSidebar user={user} cabang={cabang} />
         <SidebarInset className="flex flex-col w-full min-h-screen bg-gray-50 dark:bg-gray-950">
           {/* Header */}
           <header className="h-14 md:h-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 flex items-center px-3 md:px-6 gap-2 md:gap-4 sticky top-0 z-30 transition-shadow duration-300">

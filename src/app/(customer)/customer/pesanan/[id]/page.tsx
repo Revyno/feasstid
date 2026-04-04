@@ -275,7 +275,7 @@ export default function OrderDetailPage() {
               rel="noopener noreferrer"
               className="block"
             >
-              <Button variant="outline" className="w-full h-10 rounded-xl font-bold border-gray-700 text-white hover:bg-white hover:text-gray-900 transition-all gap-2 text-sm">
+              <Button variant="outline" className="w-full h-10 rounded-xl font-bold border-gray-700 text-white hover:bg-white hover:text-black-500 transition-all gap-2 text-sm">
                 Chat CS WhatsApp
                 <ExternalLink className="w-3 h-3" />
               </Button>

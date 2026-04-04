@@ -52,6 +52,7 @@ export default function UsersPage() {
       email: fd.get("email") as string,
       phone: fd.get("phone") as string,
       role: fd.get("role") as string,
+      cabang: (fd.get("cabang") as string) || null,
     };
     if (editing) {
       await supabase.from("users").update(payload).eq("id", editing.id);
@@ -83,6 +84,16 @@ export default function UsersPage() {
                   <option value="operator">Operator</option>
                 </select>
               </div>
+              <div>
+                <Label>Cabang</Label>
+                <select name="cabang" defaultValue={editing?.cabang ?? ""} className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                  <option value="">-- Tidak ada cabang --</option>
+                  <option value="Cabang 1">Cabang 1</option>
+                  <option value="Cabang 2">Cabang 2</option>
+                  <option value="Cabang 3">Cabang 3</option>
+                  <option value="Pusat">Pusat</option>
+                </select>
+              </div>
               <Button type="submit" className="w-full">{editing ? "Update" : "Simpan"}</Button>
             </form>
           </DialogContent>
@@ -100,7 +111,7 @@ export default function UsersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nama</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Role</TableHead><TableHead className="text-right">Aksi</TableHead>
+                  <TableHead>Nama</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Role</TableHead><TableHead>Cabang</TableHead><TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -112,6 +123,16 @@ export default function UsersPage() {
                     <TableCell>{u.email}</TableCell>
                     <TableCell>{u.phone ?? "-"}</TableCell>
                     <TableCell><Badge variant="secondary" className={roleColors[u.role]}>{u.role.replace("_", " ")}</Badge></TableCell>
+                    <TableCell>
+                      {u.cabang ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 text-orange-600 border border-orange-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 inline-block"></span>
+                          {u.cabang}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">-</span>
+                      )}
+                    </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => { setEditing(u); setDialogOpen(true); }}><Pencil1Icon className="w-4 h-4" /></Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(u.id)}><TrashIcon className="w-4 h-4 text-red-500" /></Button>

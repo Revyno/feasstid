@@ -147,34 +147,34 @@ export default function RegisterPaymentPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-right-4 duration-500 pb-20">
+    <div className="space-y-5 md:space-y-8 animate-in slide-in-from-right-4 duration-500 pb-20">
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-2 text-sm font-medium text-gray-400 dark:text-gray-500">
+      <nav className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-medium text-gray-400 dark:text-gray-500 pt-4 md:pt-5 flex-wrap">
         <Link href="/customer" className="hover:text-orange-500 transition-colors">Dashboard</Link>
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
         <Link href="/customer/payments" className="hover:text-orange-500 transition-colors">Payments</Link>
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
         <span className="text-gray-900 dark:text-gray-100 font-bold underline decoration-2 underline-offset-4 decoration-orange-500/30">Create</span>
       </nav>
 
-      <div className="space-y-2">
-        <h1 className="text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Register New Payment</h1>
-        <p className="text-gray-500 dark:text-gray-400 font-medium">Please fill in the details below to confirm your transaction.</p>
+      <div className="space-y-1.5 md:space-y-2">
+        <h1 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-tight">Register New Payment</h1>
+        <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-medium">Please fill in the details below to confirm your transaction.</p>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 p-10 rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-800 max-w-5xl">
-        <div className="space-y-12">
+      <div className="bg-white dark:bg-gray-900 p-5 md:p-10 rounded-2xl md:rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-800 max-w-5xl">
+        <div className="space-y-7 md:space-y-12">
             {/* Transaction Details Header */}
-            <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-500">
-                    <Info className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 md:gap-3">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-500 shrink-0">
+                    <Info className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Transaction Details</h2>
+                <h2 className="text-lg md:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Transaction Details</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                <div className="space-y-3">
-                    <Label className="text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Select Order</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-10">
+                <div className="space-y-2 md:space-y-3">
+                    <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Select Order</Label>
                     <Select value={selectedOrder} onValueChange={(val) => {
                         setSelectedOrder(val || "");
                         const order = orders.find(o => o.id === val);
@@ -182,12 +182,12 @@ export default function RegisterPaymentPage() {
                             setAmount(order.total_harga.toLocaleString('id-ID'));
                         }
                     }}>
-                        <SelectTrigger className="h-14 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-2xl focus:ring-0 font-bold text-gray-900 dark:text-gray-100">
+                        <SelectTrigger className="w-full h-12 md:h-14 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-xl md:rounded-2xl focus:ring-0 font-bold text-gray-900 dark:text-gray-100 text-sm md:text-base">
                             <SelectValue placeholder="Select an active order" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl border-gray-100 shadow-xl font-bold">
                             {orders.map(order => (
-                                <SelectItem key={order.id} value={order.id}>
+                                <SelectItem key={order.id} value={order.id} className="text-sm">
                                     {order.kode_pesanan} - Rp {order.total_harga.toLocaleString('id-ID')}
                                 </SelectItem>
                             ))}
@@ -195,76 +195,76 @@ export default function RegisterPaymentPage() {
                     </Select>
                 </div>
 
-                <div className="space-y-3">
-                    <Label className="text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Payment Date</Label>
+                <div className="space-y-2 md:space-y-3">
+                    <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Payment Date</Label>
                     <div className="relative">
-                        <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                        <CalendarIcon className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400 dark:text-gray-500" />
                         <Input 
                             type="date" 
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="h-14 pl-12 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 font-bold text-gray-900 dark:text-gray-100" 
+                            className="h-12 md:h-14 pl-10 md:pl-12 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-xl md:rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 font-bold text-gray-900 dark:text-gray-100 text-sm md:text-base" 
                         />
                     </div>
                 </div>
 
-                <div className="space-y-3">
-                    <Label className="text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Amount Paid</Label>
+                <div className="space-y-2 md:space-y-3">
+                    <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Amount Paid</Label>
                     <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-900 dark:text-gray-100">RP</span>
+                        <span className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 font-black text-gray-900 dark:text-gray-100 text-sm md:text-base">RP</span>
                         <Input 
                             placeholder="0.00" 
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
-                            className="h-14 pl-11 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 font-black text-gray-900 dark:text-gray-100 text-lg shadow-inner" 
+                            className="h-12 md:h-14 pl-10 md:pl-11 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 font-black text-gray-900 dark:text-gray-100 text-base md:text-lg shadow-inner" 
                         />
                     </div>
                 </div>
 
-                <div className="space-y-3">
-                    <Label className="text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Payment Status</Label>
+                <div className="space-y-2 md:space-y-3">
+                    <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Payment Status</Label>
                     <div className="relative group">
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-600" />
-                        <Input readOnly value="Pending Confirmation" className="h-14 border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl font-bold text-gray-900 dark:text-gray-100 cursor-not-allowed pr-10" />
+                        <Lock className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-600" />
+                        <Input readOnly value="Pending Confirmation" className="h-12 md:h-14 border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl md:rounded-2xl font-bold text-gray-900 dark:text-gray-100 cursor-not-allowed pr-10 text-sm md:text-base" />
                     </div>
                 </div>
             </div>
 
             <div className="h-px bg-gray-100 dark:bg-gray-800 w-full" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                <div className="space-y-8">
-                    <div className="space-y-3">
-                        <Label className="text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Payment Method</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-10">
+                <div className="space-y-5 md:space-y-8">
+                    <div className="space-y-2 md:space-y-3">
+                        <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Payment Method</Label>
                         <Select value={method} onValueChange={(val) => setMethod(val || "transfer")}>
-                            <SelectTrigger className="h-14 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-2xl focus:ring-0 font-bold dark:text-gray-100">
+                            <SelectTrigger className="w-full h-12 md:h-14 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-xl md:rounded-2xl focus:ring-0 font-bold dark:text-gray-100 text-sm md:text-base">
                                 <SelectValue placeholder="Select method" />
                             </SelectTrigger>
                             <SelectContent className="rounded-2xl border-gray-100 shadow-xl font-bold">
-                                <SelectItem value="transfer">Bank Transfer</SelectItem>
-                                <SelectItem value="qris">QRIS</SelectItem>
-                                <SelectItem value="ewallet">E-Wallet (OVO/Gopay/Dana)</SelectItem>
+                                <SelectItem value="transfer" className="text-sm">Bank Transfer</SelectItem>
+                                <SelectItem value="qris" className="text-sm">QRIS</SelectItem>
+                                <SelectItem value="ewallet" className="text-sm">E-Wallet (OVO/Gopay/Dana)</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                         <div className="flex items-center gap-2 pl-1">
-                            <Label className="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Reference Number</Label>
+                            <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Reference Number</Label>
                             <span className="text-[10px] font-black text-orange-400 tracking-tighter uppercase">(Optional)</span>
                         </div>
                         <Input 
                             placeholder="TXN-99887766" 
                             value={reference}
                             onChange={(e) => setReference(e.target.value)}
-                            className="h-14 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 font-bold text-gray-900 dark:text-gray-100" 
+                            className="h-12 md:h-14 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 rounded-xl md:rounded-2xl focus-visible:ring-orange-500/20 focus-visible:border-orange-500 font-bold text-gray-900 dark:text-gray-100 text-sm md:text-base" 
                         />
                     </div>
                 </div>
 
-                <div className="space-y-3">
-                    <Label className="text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Proof of Payment</Label>
-                    <div className="relative h-full min-h-[180px] border-4 border-dashed border-orange-200 dark:border-orange-900/50 bg-orange-100/5 dark:bg-orange-950/10 hover:bg-orange-500 dark:hover:bg-orange-600 font-black group transition-all duration-300 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 cursor-pointer overflow-hidden group-hover:border-orange-500">
+                <div className="space-y-2 md:space-y-3">
+                    <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-300 uppercase tracking-widest pl-1">Proof of Payment</Label>
+                    <div className="relative h-full min-h-[160px] md:min-h-[180px] border-4 border-dashed border-orange-200 dark:border-orange-900/50 bg-orange-100/5 dark:bg-orange-950/10 hover:bg-orange-500 dark:hover:bg-orange-600 font-black group transition-all duration-300 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center justify-center gap-3 md:gap-4 cursor-pointer overflow-hidden group-hover:border-orange-500">
                         {fileUrl ? (
                           <div className="relative w-full h-full group/preview">
                             <img src={fileUrl} alt="Preview" className="w-full h-full object-cover" />
@@ -274,9 +274,9 @@ export default function RegisterPaymentPage() {
                                 setFile(null);
                                 setFileUrl(null);
                               }}
-                              className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover/preview:opacity-100 transition-opacity z-20"
+                              className="absolute top-3 right-3 md:top-4 md:right-4 p-1.5 md:p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover/preview:opacity-100 transition-opacity z-20"
                             >
-                              <X className="w-5 h-5" />
+                              <X className="w-4 h-4 md:w-5 md:h-5" />
                             </button>
                           </div>
                         ) : (
@@ -295,11 +295,11 @@ export default function RegisterPaymentPage() {
                             />
                             <div className="absolute inset-0 bg-orange-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
                             <div className="relative z-10 flex flex-col items-center gap-2 group-hover:text-white transition-colors duration-300">
-                                <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 group-hover:bg-white/20 group-hover:text-white transition-all">
-                                    <Upload className="w-7 h-7" />
+                                <div className="w-11 h-11 md:w-14 md:h-14 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 group-hover:bg-white/20 group-hover:text-white transition-all">
+                                    <Upload className="w-5 h-5 md:w-7 md:h-7" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-base font-black uppercase tracking-tight">Upload bukti pembayaran</p>
+                                    <p className="text-sm md:text-base font-black uppercase tracking-tight">Upload bukti pembayaran</p>
                                     <p className="text-[10px] font-medium opacity-60">JPG, PNG, PDF UP TO 5MB</p>
                                 </div>
                             </div>
@@ -309,33 +309,34 @@ export default function RegisterPaymentPage() {
                 </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
                 <div className="flex items-center gap-2 pl-1">
-                    <MessageSquare className="w-4 h-4 text-orange-500" />
-                    <Label className="text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Notes</Label>
+                    <MessageSquare className="w-3.5 h-3.5 md:w-4 md:h-4 text-orange-500" />
+                    <Label className="text-xs md:text-sm font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest">Notes</Label>
                     <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-tighter uppercase">(Optional)</span>
                 </div>
                 <Textarea 
                     placeholder="Add any specific details about this payment..." 
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="min-h-[140px] border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 rounded-[2rem] p-6 focus-visible:ring-orange-500/20 font-medium text-gray-600 dark:text-gray-400 focus-visible:border-orange-500 transition-all" 
+                    className="min-h-[110px] md:min-h-[140px] border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl md:rounded-[2rem] p-4 md:p-6 focus-visible:ring-orange-500/20 font-medium text-gray-600 dark:text-gray-400 focus-visible:border-orange-500 transition-all text-sm md:text-base" 
                 />
             </div>
 
-            <div className="flex items-center justify-end gap-4 pt-4">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 md:gap-4 pt-2 md:pt-4">
                 <Button 
                     variant="ghost" 
-                    className="h-14 px-10 rounded-2xl font-black text-gray-400 dark:text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all"
+                    className="h-12 md:h-14 px-6 md:px-10 rounded-xl md:rounded-2xl font-bold text-red-500 dark:text-red-500 hover:text-white hover:bg-red-400 dark:hover:bg-red-400 transition-all w-full sm:w-auto"
                     onClick={() => router.back()}
                 >
                     Cancel
                 </Button>
                 <Button 
                     onClick={handleSubmit}
-                    className="h-14 px-12 rounded-2xl font-black text-white bg-orange-500 hover:bg-orange-600 shadow-xl  transition-all hover:scale-105 active:scale-95 text-lg"
+                    disabled={isSubmitting}
+                    className="h-12 md:h-14 px-8 md:px-12 rounded-xl md:rounded-2xl font-black text-white bg-orange-500 hover:bg-orange-600 shadow-xl transition-all hover:scale-105 active:scale-95 text-base md:text-lg w-full sm:w-auto"
                 >
-                    Submit Payment
+                    {isSubmitting ? "Submitting..." : "Submit Payment"}
                 </Button>
             </div>
         </div>

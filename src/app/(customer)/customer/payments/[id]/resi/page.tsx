@@ -149,20 +149,20 @@ export default function PrintInvoicePage() {
       `}</style>
 
       {/* Screen nav & buttons */}
-      <div className="max-w-3xl mx-auto space-y-6 pb-16 animate-in fade-in duration-500">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
+      <div className="max-w-3xl mx-auto space-y-4 md:space-y-6 pb-16 animate-in fade-in duration-500">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
           <nav className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
             <Link href="/customer/payments" className="hover:text-orange-500 transition-colors">Pembayaran</Link>
             <ChevronRight className="w-3 h-3" />
             <span className="text-gray-900 dark:text-gray-100 font-black">Print Invoice</span>
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={() => router.back()}
-              className="h-10 px-5 rounded-xl font-bold text-gray-500 hover:text-orange-500 flex items-center gap-2 text-sm">
+              className="h-9 md:h-10 px-4 md:px-5 rounded-xl font-bold text-gray-500 hover:text-orange-500 flex items-center gap-2 text-sm">
               <ArrowLeft className="w-4 h-4" /> Kembali
             </Button>
             <Button onClick={handlePrint}
-              className="h-10 px-6 rounded-xl font-black bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2 text-sm shadow-lg shadow-orange-200">
+              className="h-9 md:h-10 px-4 md:px-6 rounded-xl font-black bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2 text-sm shadow-lg shadow-orange-200">
               <Download className="w-4 h-4" /> Download / Print
             </Button>
           </div>
@@ -175,26 +175,26 @@ export default function PrintInvoicePage() {
           style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: "#222" }}
         >
           {/* Top: Logo + Title */}
-          <div className="flex flex-col items-center pt-10 pb-6 px-10 border-b border-gray-100">
+          <div className="flex flex-col items-center pt-7 md:pt-10 pb-5 md:pb-6 px-5 md:px-10 border-b border-gray-100">
             {/* Logo placeholder */}
-            <div className="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center mb-4 shadow-md">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-orange-500 flex items-center justify-center mb-3 md:mb-4 shadow-md">
               <img src="/logo/1.jpg" alt="Logo" className="w-full h-full object-contain" />
             </div>
-            <h1 className="text-xl font-black text-gray-900 tracking-wide uppercase">INVOICE PEMBAYARAN</h1>
-            <p className="text-sm text-gray-500 mt-1">No. Invoice: <span className="font-bold text-gray-800">{invoiceNumber}</span></p>
+            <h1 className="text-lg md:text-xl font-black text-gray-900 tracking-wide uppercase">INVOICE PEMBAYARAN</h1>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">No. Invoice: <span className="font-bold text-gray-800">{invoiceNumber}</span></p>
           </div>
 
           {/* Body */}
-          <div className="px-10 py-8 space-y-8">
+          <div className="px-4 md:px-10 py-5 md:py-8 space-y-6 md:space-y-8">
 
-            {/* Customer & Invoice Info */}
-            <div className="grid grid-cols-2 gap-10">
+            {/* Customer & Invoice Info — stacked on mobile, 2-col on sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-10">
               {/* Customer Info */}
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Informasi Customer</p>
+                <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2 md:mb-3 border-b pb-2">Informasi Customer</p>
                 <div className="space-y-1.5 text-sm">
                   <div><span className="text-gray-400 text-xs">Nama:</span><br/><span className="font-semibold text-gray-800">{customer?.name || '-'}</span></div>
-                  <div><span className="text-gray-400 text-xs">Email:</span><br/><span className="text-gray-700">{customer?.email || '-'}</span></div>
+                  <div><span className="text-gray-400 text-xs">Email:</span><br/><span className="text-gray-700 break-all">{customer?.email || '-'}</span></div>
                   <div><span className="text-gray-400 text-xs">Telepon:</span><br/><span className="text-gray-700">{customer?.phone || '-'}</span></div>
                   {customer?.address && (
                     <div><span className="text-gray-400 text-xs">Alamat:</span><br/><span className="text-gray-700">{customer.address}</span></div>
@@ -204,9 +204,9 @@ export default function PrintInvoicePage() {
 
               {/* Invoice Detail */}
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Detail Invoice</p>
+                <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2 md:mb-3 border-b pb-2">Detail Invoice</p>
                 <div className="space-y-1.5 text-sm">
-                  <div><span className="text-gray-400 text-xs">No. Invoice:</span><br/><span className="font-semibold text-gray-800">{invoiceNumber}</span></div>
+                  <div><span className="text-gray-400 text-xs">No. Invoice:</span><br/><span className="font-semibold text-gray-800 break-all">{invoiceNumber}</span></div>
                   <div><span className="text-gray-400 text-xs">Kode Pesanan:</span><br/>
                     <span className="font-bold text-orange-500 text-xs tracking-widest">{order?.kode_pesanan || '-'}</span>
                   </div>
@@ -222,55 +222,61 @@ export default function PrintInvoicePage() {
 
             {/* Detail Pesanan Table */}
             <div>
-              <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Detail Pesanan</p>
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-gray-100 text-gray-600">
-                    <th className="text-left py-2.5 px-3 text-xs font-black uppercase tracking-wider rounded-l-lg">Layanan / Jml Sepatu</th>
-                    <th className="text-center py-2.5 px-3 text-xs font-black uppercase tracking-wider">Jumlah</th>
-                    <th className="text-right py-2.5 px-3 text-xs font-black uppercase tracking-wider">Harga Satuan</th>
-                    <th className="text-right py-2.5 px-3 text-xs font-black uppercase tracking-wider rounded-r-lg">Harga Akhir</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {details.length > 0 ? details.map((d: any, i: number) => (
-                    <tr key={d.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
-                      <td className="py-3 px-3 align-top">
-                        <div className="font-semibold text-gray-800">{d.layanan?.nama_layanan || 'Layanan'}</div>
-                        <div className="text-xs text-gray-400">{d.jenis_sepatu?.nama_jenis} {d.jenis_sepatu?.merek ? `— ${d.jenis_sepatu.merek}` : ''}</div>
-                        {d.catatan_khusus && <div className="text-xs text-gray-400 italic mt-0.5">{d.catatan_khusus}</div>}
-                      </td>
-                      <td className="py-3 px-3 text-center text-gray-700">{d.jumlah_pasang || 1} pasang</td>
-                      <td className="py-3 px-3 text-right text-gray-700">Rp {(d.harga_satuan || 0).toLocaleString('id-ID')}</td>
-                      <td className="py-3 px-3 text-right font-bold text-gray-900">Rp {(d.subtotal || 0).toLocaleString('id-ID')}</td>
+              <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2 md:mb-3 border-b pb-2">Detail Pesanan</p>
+              {/* Mobile-friendly table with horizontal scroll on very small screens */}
+              <div className="overflow-x-auto -mx-1">
+                <table className="w-full text-sm border-collapse min-w-[320px]">
+                  <thead>
+                    <tr className="bg-gray-100 text-gray-600">
+                      <th className="text-left py-2 px-2 md:py-2.5 md:px-3 text-xs font-black uppercase tracking-wider rounded-l-lg">Layanan</th>
+                      <th className="text-center py-2 px-2 md:py-2.5 md:px-3 text-xs font-black uppercase tracking-wider">Jml</th>
+                      <th className="text-right py-2 px-2 md:py-2.5 md:px-3 text-xs font-black uppercase tracking-wider hidden sm:table-cell">Harga Satuan</th>
+                      <th className="text-right py-2 px-2 md:py-2.5 md:px-3 text-xs font-black uppercase tracking-wider rounded-r-lg">Total</th>
                     </tr>
-                  )) : (
+                  </thead>
+                  <tbody>
+                    {details.length > 0 ? details.map((d: any, i: number) => (
+                      <tr key={d.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
+                        <td className="py-2.5 px-2 md:py-3 md:px-3 align-top">
+                          <div className="font-semibold text-gray-800 text-xs md:text-sm">{d.layanan?.nama_layanan || 'Layanan'}</div>
+                          <div className="text-xs text-gray-400">{d.jenis_sepatu?.nama_jenis} {d.jenis_sepatu?.merek ? `— ${d.jenis_sepatu.merek}` : ''}</div>
+                          {d.catatan_khusus && <div className="text-xs text-gray-400 italic mt-0.5">{d.catatan_khusus}</div>}
+                        </td>
+                        <td className="py-2.5 px-2 md:py-3 md:px-3 text-center text-gray-700 text-xs md:text-sm whitespace-nowrap">{d.jumlah_pasang || 1} ps</td>
+                        <td className="py-2.5 px-2 md:py-3 md:px-3 text-right text-gray-700 text-xs md:text-sm hidden sm:table-cell whitespace-nowrap">Rp {(d.harga_satuan || 0).toLocaleString('id-ID')}</td>
+                        <td className="py-2.5 px-2 md:py-3 md:px-3 text-right font-bold text-gray-900 text-xs md:text-sm whitespace-nowrap">Rp {(d.subtotal || 0).toLocaleString('id-ID')}</td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan={4} className="py-4 px-3 text-center text-gray-400 text-xs italic">Detail layanan tidak tersedia</td>
+                      </tr>
+                    )}
+                  </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-gray-200">
+                      <td colSpan={2} className="py-2.5 px-2 md:px-3 text-right text-xs font-black text-gray-600 uppercase tracking-wider sm:hidden">Total Pesanan</td>
+                      <td colSpan={3} className="py-2.5 px-2 md:px-3 text-right text-xs md:text-sm font-black text-gray-600 uppercase tracking-wider hidden sm:table-cell">Total Pesanan</td>
+                      <td className="py-2.5 px-2 md:py-3 md:px-3 text-right font-black text-gray-800 text-xs md:text-sm whitespace-nowrap">Rp {(order?.total_harga || 0).toLocaleString('id-ID')}</td>
+                    </tr>
                     <tr>
-                      <td colSpan={4} className="py-4 px-3 text-center text-gray-400 text-xs italic">Detail layanan tidak tersedia</td>
+                      <td colSpan={2} className="py-1.5 px-2 md:px-3 text-right text-xs font-black text-gray-600 uppercase tracking-wider sm:hidden">Dibayar</td>
+                      <td colSpan={3} className="py-1.5 px-2 md:px-3 text-right text-xs md:text-sm font-black text-gray-600 uppercase tracking-wider hidden sm:table-cell">Jumlah Dibayar</td>
+                      <td className="py-1.5 px-2 md:py-2 md:px-3 text-right font-black text-orange-500 text-sm md:text-base whitespace-nowrap">Rp {(payment.jumlah_dibayar || 0).toLocaleString('id-ID')}</td>
                     </tr>
-                  )}
-                </tbody>
-                <tfoot>
-                  <tr className="border-t-2 border-gray-200">
-                    <td colSpan={3} className="py-3 px-3 text-right text-sm font-black text-gray-600 uppercase tracking-wider">Total Pesanan</td>
-                    <td className="py-3 px-3 text-right font-black text-gray-800">Rp {(order?.total_harga || 0).toLocaleString('id-ID')}</td>
-                  </tr>
-                  <tr>
-                    <td colSpan={3} className="py-2 px-3 text-right text-sm font-black text-gray-600 uppercase tracking-wider">Jumlah Dibayar</td>
-                    <td className="py-2 px-3 text-right font-black text-orange-500 text-base">Rp {(payment.jumlah_dibayar || 0).toLocaleString('id-ID')}</td>
-                  </tr>
-                  {(order?.total_harga - payment.jumlah_dibayar) > 0 && (
-                    <tr>
-                      <td colSpan={3} className="py-2 px-3 text-right text-xs font-black text-red-400 uppercase tracking-wider">Sisa Tagihan</td>
-                      <td className="py-2 px-3 text-right font-black text-red-500 text-sm">Rp {(order?.total_harga - payment.jumlah_dibayar).toLocaleString('id-ID')}</td>
-                    </tr>
-                  )}
-                </tfoot>
-              </table>
+                    {(order?.total_harga - payment.jumlah_dibayar) > 0 && (
+                      <tr>
+                        <td colSpan={2} className="py-1.5 px-2 md:px-3 text-right text-xs font-black text-red-400 uppercase tracking-wider sm:hidden">Sisa</td>
+                        <td colSpan={3} className="py-1.5 px-2 md:px-3 text-right text-xs font-black text-red-400 uppercase tracking-wider hidden sm:table-cell">Sisa Tagihan</td>
+                        <td className="py-1.5 px-2 md:py-2 md:px-3 text-right font-black text-red-500 text-xs md:text-sm whitespace-nowrap">Rp {(order?.total_harga - payment.jumlah_dibayar).toLocaleString('id-ID')}</td>
+                      </tr>
+                    )}
+                  </tfoot>
+                </table>
+              </div>
             </div>
 
             {/* Status */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3">
               <span className="text-xs font-black uppercase tracking-wider text-gray-400">Status Pembayaran:</span>
               <span className={`text-xs font-black uppercase px-3 py-1 rounded-full border ${
                 payment.status_pembayaran === 'paid' 
@@ -285,12 +291,12 @@ export default function PrintInvoicePage() {
 
             {/* Nomor Resi (tracking) */}
             {payment.nomor_resi && (
-              <div className="bg-orange-50 border border-orange-200 rounded-xl px-5 py-4 flex items-center justify-between">
+              <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 md:px-5 py-3 md:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-orange-400">Nomor Resi / Pelacakan</p>
-                  <p className="text-base font-black text-gray-800 tracking-widest mt-0.5">{payment.nomor_resi}</p>
+                  <p className="text-sm md:text-base font-black text-gray-800 tracking-widest mt-0.5">{payment.nomor_resi}</p>
                 </div>
-                <div className="text-xs text-orange-400 font-bold text-right max-w-[140px] leading-relaxed">
+                <div className="text-xs text-orange-400 font-bold sm:text-right sm:max-w-[140px] leading-relaxed">
                   Gunakan nomor ini untuk melacak pesanan Anda
                 </div>
               </div>
@@ -305,28 +311,28 @@ export default function PrintInvoicePage() {
             )}
 
             {/* Thank you */}
-            <div className="text-center py-4 border-t border-dashed border-gray-200">
-              <p className="text-sm font-semibold text-gray-600">Terima kasih telah menggunakan layanan laundry kami!</p>
+            <div className="text-center py-3 md:py-4 border-t border-dashed border-gray-200">
+              <p className="text-xs md:text-sm font-semibold text-gray-600">Terima kasih telah menggunakan layanan laundry kami!</p>
               <p className="text-xs text-gray-400 mt-1">Dicetak pada: {printDate}</p>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="px-10 py-5 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+          <div className="px-4 md:px-10 py-3 md:py-5 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
             <p className="text-[10px] text-gray-400">Ini adalah invoice otomatis dari sistem Feast.id Laundry. Sah tanpa tanda tangan.</p>
-            <p className="text-[10px] text-gray-300 font-mono">{payment.id}</p>
+            <p className="text-[10px] text-gray-300 font-mono truncate max-w-full sm:max-w-[180px]">{payment.id}</p>
           </div>
         </div>
 
         {/* Bottom CTA buttons (hidden on print) */}
         <div className="flex flex-col sm:flex-row gap-3 no-print">
           <Button onClick={handlePrint}
-            className="flex-1 h-14 rounded-2xl font-black bg-orange-500 hover:bg-orange-600 text-white shadow-xl shadow-orange-100 flex items-center justify-center gap-3 text-base">
-            <Printer className="w-5 h-5" /> Print Invoice
+            className="flex-1 h-12 md:h-14 rounded-2xl font-black bg-orange-500 hover:bg-orange-600 text-white shadow-xl shadow-orange-100 flex items-center justify-center gap-3 text-sm md:text-base">
+            <Printer className="w-4 h-4 md:w-5 md:h-5" /> Print Invoice
           </Button>
           <Button onClick={handlePrint} variant="outline"
-            className="flex-1 h-14 rounded-2xl font-black border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-3 text-base">
-            <Download className="w-5 h-5" /> Download PDF
+            className="flex-1 h-12 md:h-14 rounded-2xl font-black border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-3 text-sm md:text-base">
+            <Download className="w-4 h-4 md:w-5 md:h-5" /> Download PDF
           </Button>
         </div>
       </div>

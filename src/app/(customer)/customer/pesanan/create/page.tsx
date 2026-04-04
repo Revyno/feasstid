@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { 
@@ -16,18 +16,13 @@ import {
   PlusCircle,
   Sparkles,
   ArrowRight,
-  LayoutGrid
+  LayoutGrid,
+  ChevronDown,
+  Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -47,6 +42,85 @@ interface ServiceItem {
   foto?: File;
   fotoUrl?: string;
 }
+
+// ── Custom Select for UUID-based options ──────────────────────────────────────
+interface CustomSelectOption {
+  value: string;
+  label: string;
+}
+
+function CustomSelect({
+  value,
+  onChange,
+  options,
+  placeholder = "Pilih...",
+  className,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  options: CustomSelectOption[];
+  placeholder?: string;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const selectedLabel = options.find((o) => o.value === value)?.label ?? "";
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={containerRef} className={cn("relative w-full", className)}>
+      {/* Trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full h-12 items-center justify-between gap-2 border-none bg-gray-50 dark:bg-gray-800/50 rounded-lg px-4 text-sm font-bold text-gray-900 dark:text-white outline-none cursor-pointer"
+      >
+        <span className={cn("truncate text-left", !selectedLabel && "font-normal text-gray-400 dark:text-gray-500")}>
+          {selectedLabel || placeholder}
+        </span>
+        <ChevronDown className={cn("w-4 h-4 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl bg-white dark:bg-gray-900 shadow-xl border border-gray-100 dark:border-gray-800 py-1">
+          {options.length === 0 ? (
+            <div className="px-4 py-3 text-xs text-gray-400 text-center">Tidak ada pilihan</div>
+          ) : (
+            options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  onChange(option.value);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center justify-between gap-2 px-4 py-2.5 text-sm font-bold text-left hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-colors",
+                  value === option.value ? "text-orange-500" : "text-gray-800 dark:text-gray-200"
+                )}
+              >
+                <span className="truncate">{option.label}</span>
+                {value === option.value && <Check className="w-3.5 h-3.5 shrink-0 text-orange-500" />}
+              </button>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function PesananCreatePage() {
   const router = useRouter();
@@ -205,6 +279,17 @@ export default function PesananCreatePage() {
     }
   };
 
+  // Build option lists for custom selects
+  const layananOptions: CustomSelectOption[] = layananList.map((lay) => ({
+    value: lay.id,
+    label: `${lay.nama_layanan} — Rp ${(HARGA_KATEGORI[lay.kategori_layanan as ServiceCategory] || 0).toLocaleString('id-ID')}`,
+  }));
+
+  const jenisSepatuOptions: CustomSelectOption[] = jenisSepatuList.map((j) => ({
+    value: j.id,
+    label: `${j.nama_jenis} (${j.merek})`,
+  }));
+
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
       <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -256,16 +341,16 @@ export default function PesananCreatePage() {
           </div>
           <div className="space-y-2">
             <Label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Metode Pengantaran <span className="text-orange-500">*</span></Label>
-            <Select value={metodePengantaran} onValueChange={(val) => setMetodePengantaran(val || "drop_off")}>
-              <SelectTrigger className="h-12 border-none bg-gray-50 dark:bg-gray-800/50 rounded-xl font-bold px-4 focus:ring-orange-500/20">
-                <SelectValue placeholder="Pilih metode" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl border-none font-bold shadow-xl">
-                <SelectItem value="drop_off" className="py-3">Drop Off (Antar ke Store)</SelectItem>
-                <SelectItem value="pickup" className="py-3">Pickup (Layanan Penjemputan)</SelectItem>
-                <SelectItem value="delivery" className="py-3">Delivery Service</SelectItem>
-              </SelectContent>
-            </Select>
+            <CustomSelect
+              value={metodePengantaran}
+              onChange={(val) => setMetodePengantaran(val || "drop_off")}
+              options={[
+                { value: "drop_off", label: "Drop Off (Antar ke Store)" },
+                { value: "pickup", label: "Pickup (Layanan Penjemputan)" },
+                { value: "delivery", label: "Delivery Service" },
+              ]}
+              placeholder="Pilih metode"
+            />
           </div>
         </div>
       </div>
@@ -311,31 +396,21 @@ export default function PesananCreatePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                   <div className="space-y-2 sm:col-span-1">
                     <Label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Layanan</Label>
-                    <Select value={item.layanan} onValueChange={(val) => updateItem(item.id, 'layanan', val)}>
-                      <SelectTrigger className="h-12 border-none bg-gray-50 dark:bg-gray-800/50 rounded-lg font-bold text-gray-900 dark:text-white px-4 text-sm">
-                        <SelectValue placeholder="Pilih layanan" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl border-none font-bold shadow-xl">
-                        {layananList.map(lay => (
-                          <SelectItem key={lay.id} value={lay.id} className="py-2 text-sm">
-                            {lay.nama_layanan} — Rp {(HARGA_KATEGORI[lay.kategori_layanan as ServiceCategory] || 0).toLocaleString('id-ID')}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <CustomSelect
+                      value={item.layanan}
+                      onChange={(val) => updateItem(item.id, 'layanan', val)}
+                      options={layananOptions}
+                      placeholder="Pilih layanan"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Jenis Sepatu</Label>
-                    <Select value={item.jenisSepatu} onValueChange={(val) => updateItem(item.id, 'jenisSepatu', val)}>
-                      <SelectTrigger className="h-12 border-none bg-gray-50 dark:bg-gray-800/50 rounded-xl font-bold text-gray-900 dark:text-white px-4 text-sm">
-                        <SelectValue placeholder="Pilih jenis" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl border-none font-bold shadow-xl">
-                        {jenisSepatuList.map(j => (
-                          <SelectItem key={j.id} value={j.id} className="py-2 text-sm">{j.nama_jenis} ({j.merek})</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <CustomSelect
+                      value={item.jenisSepatu}
+                      onChange={(val) => updateItem(item.id, 'jenisSepatu', val)}
+                      options={jenisSepatuOptions}
+                      placeholder="Pilih jenis"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center block">Jumlah Pasang</Label>

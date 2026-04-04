@@ -40,6 +40,7 @@ export interface User {
   password: string | null;
   phone: string | null;
   role: UserRole;
+  cabang: string | null;
   created_at: string;
   updated_at: string;
 }
